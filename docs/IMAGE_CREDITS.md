@@ -17,3 +17,11 @@ Each image is available at `https://images.unsplash.com/<Unsplash image>`.
 
 To swap in real photos, overwrite a file with the same name, or change the imports and alt text in
 `src/data/images.ts`.
+
+## Map
+
+`map-hospital.jpg` is a static map centred on the hospital (18.5285622, 73.9460343), stitched from
+[OpenStreetMap](https://www.openstreetmap.org) tiles. Map data © OpenStreetMap contributors, available
+under the [Open Database License](https://www.openstreetmap.org/copyright); the site shows this credit on
+the map. It is shown under the live Google Map while that loads, and on its own where embedded maps are
+blocked.

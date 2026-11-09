@@ -6,6 +6,8 @@ import { IMAGES } from './images';
  * NOTE: email and doctor credentials are still placeholder copy from the
  * design — replace with confirmed details before launch.
  */
+const LOCATION = { lat: 18.5285622, lng: 73.9460343 };
+
 const ADDRESS =
   'Sr No. 35, Mundhwa - Manjari Rd, above Kastura Hotel, near New Orbis School, Keshav Nagar, Mundhwa, Pune, Maharashtra 411036';
 
@@ -26,10 +28,14 @@ export const HOSPITAL = {
   ],
   opdHours: 'OPD: Mon–Sat, 10am–1pm · 5pm–8pm',
   emergencyHours: 'Emergency & labour ward: 24 × 7',
-  /** Opens Google Maps (app or web) at the hospital's address. */
-  directionsHref: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`,
-  /** Embeddable Google Map pinned to the hospital's address (no API key needed). */
-  mapEmbedSrc: `https://maps.google.com/maps?q=${encodeURIComponent(ADDRESS)}&z=16&output=embed`,
+  /** Exact pin, from the hospital's Google Maps listing ("Life Springs Maternity Hospital"). */
+  location: LOCATION,
+  /** The hospital's own Google Maps share link (opens its listing). */
+  mapsHref: 'https://maps.app.goo.gl/6G1mGAhUpxGDZqVLA',
+  /** Starts Google Maps navigation to the hospital. */
+  directionsHref: `https://www.google.com/maps/dir/?api=1&destination=${LOCATION.lat},${LOCATION.lng}`,
+  /** Embeddable Google Map pinned to the hospital (no API key needed). */
+  mapEmbedSrc: `https://maps.google.com/maps?q=${LOCATION.lat},${LOCATION.lng}&z=17&output=embed`,
   year: 2026,
 };
 
