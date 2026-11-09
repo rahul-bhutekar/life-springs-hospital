@@ -4,6 +4,7 @@ import { SiteFooter } from '../components/site/SiteFooter';
 import { SiteHeader } from '../components/site/SiteHeader';
 import { Button } from '../components/ui/Button';
 import { Eyebrow } from '../components/ui/Eyebrow';
+import { MapEmbed } from '../components/ui/MapEmbed';
 import { PhotoSlot } from '../components/ui/PhotoSlot';
 import { DOCTOR, FACILITIES, FEATURED_STORY, HOSPITAL, SERVICES, TESTIMONIALS } from '../data/hospital';
 import './Home.css';
@@ -182,7 +183,7 @@ export function Home() {
               <span className="only-mobile-inline">Visit us</span>
               <span className="only-desktop-inline">Visit Life Springs</span>
             </h2>
-            <PhotoSlot tone="mint" className="visit__map only-mobile" label="map embed · Keshav Nagar, Mundhwa, Pune" />
+            <MapEmbed className="visit__map only-mobile" />
             <address className="visit__address">
               {HOSPITAL.addressLines.map((line) => (
                 <span key={line}>
@@ -217,7 +218,7 @@ export function Home() {
               </Button>
             </div>
           </div>
-          <PhotoSlot tone="mint" className="visit__map visit__map--lg only-desktop" label="map embed · Mundhwa - Manjari Rd, Pune 411036" />
+          <MapEmbed className="visit__map visit__map--lg only-desktop" />
         </section>
       </main>
       <SiteFooter />

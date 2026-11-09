@@ -24,7 +24,10 @@ export const HOSPITAL = {
   ],
   opdHours: 'OPD: Mon–Sat, 10am–1pm · 5pm–8pm',
   emergencyHours: 'Emergency & labour ward: 24 × 7',
-  directionsHref: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Life Springs Hospital, ' + ADDRESS)}`,
+  /** Opens Google Maps (app or web) at the hospital's address. */
+  directionsHref: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS)}`,
+  /** Embeddable Google Map pinned to the hospital's address (no API key needed). */
+  mapEmbedSrc: `https://maps.google.com/maps?q=${encodeURIComponent(ADDRESS)}&z=16&output=embed`,
   year: 2026,
 };
 

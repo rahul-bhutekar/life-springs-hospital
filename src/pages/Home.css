@@ -536,9 +536,7 @@
 /* ---------- Visit ---------- */
 .visit__map {
   margin-top: 16px;
-  height: 160px;
-  border-radius: 22px;
-  padding: 12px;
+  height: 220px;
 }
 
 .visit__address {
@@ -576,9 +574,7 @@
 
   .visit__map--lg {
     margin-top: 0;
-    height: 300px;
+    height: 340px;
     border-radius: var(--r-2xl);
-    padding: 16px;
-    background: repeating-linear-gradient(135deg, #dfe8e5 0 9px, #e8efec 9px 18px);
   }
 }
