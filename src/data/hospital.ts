@@ -1,20 +1,30 @@
 /**
  * Hospital details shown across the site.
- * NOTE: phone, address, email and doctor credentials are placeholder copy
- * from the design — replace with confirmed details before launch.
+ * Address and phone number are confirmed by the hospital.
+ * NOTE: email and doctor credentials are still placeholder copy from the
+ * design — replace with confirmed details before launch.
  */
+const ADDRESS =
+  'Sr No. 35, Mundhwa - Manjari Rd, above Kastura Hotel, near New Orbis School, Keshav Nagar, Mundhwa, Pune, Maharashtra 411036';
+
 export const HOSPITAL = {
   name: 'Life Springs Hospital',
   shortName: 'Life Springs',
   tagline: 'Maternity · Pune',
-  phoneDisplay: '+91 20 XXXX XXXX',
-  phoneHref: 'tel:+9120XXXXXXXX',
-  whatsappHref: 'https://wa.me/9120XXXXXXXX',
+  phoneDisplay: '070318 80088',
+  phoneHref: 'tel:+917031880088',
+  whatsappHref: 'https://wa.me/917031880088',
   email: 'care@lifesprings.in',
-  addressLines: ['[Street address], Pune, Maharashtra 4110XX'],
+  address: ADDRESS,
+  /** Same address, broken into lines for display. */
+  addressLines: [
+    'Sr No. 35, Mundhwa - Manjari Rd, above Kastura Hotel',
+    'Near New Orbis School, Keshav Nagar, Mundhwa',
+    'Pune, Maharashtra 411036',
+  ],
   opdHours: 'OPD: Mon–Sat, 10am–1pm · 5pm–8pm',
   emergencyHours: 'Emergency & labour ward: 24 × 7',
-  directionsHref: 'https://maps.google.com/?q=Life+Springs+Hospital+Pune',
+  directionsHref: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent('Life Springs Hospital, ' + ADDRESS)}`,
   year: 2026,
 };
 

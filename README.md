@@ -47,6 +47,6 @@ src/
 
 ## Before launch
 
-- Doctor credentials, phone, address, email, timings and testimonials are **placeholder copy** (`src/data/hospital.ts`).
+- Hospital address and phone number are real. Doctor credentials, email, timings and testimonials are still **placeholder copy** (`src/data/hospital.ts`).
 - Photos are striped placeholders with art-direction captions; pass `src` to `<PhotoSlot>` to use real photography.
 - `submitAppointmentRequest` (`src/lib/api.ts`) and the dashboard data are stubs.

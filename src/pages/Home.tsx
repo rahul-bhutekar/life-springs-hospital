@@ -182,17 +182,22 @@ export function Home() {
               <span className="only-mobile-inline">Visit us</span>
               <span className="only-desktop-inline">Visit Life Springs</span>
             </h2>
-            <PhotoSlot tone="mint" className="visit__map only-mobile" label="map embed · hospital pin, Pune" />
+            <PhotoSlot tone="mint" className="visit__map only-mobile" label="map embed · Keshav Nagar, Mundhwa, Pune" />
             <address className="visit__address">
-              {HOSPITAL.addressLines.join(', ')}
-              <br />
+              {HOSPITAL.addressLines.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
               {HOSPITAL.opdHours}
               <br />
               {HOSPITAL.emergencyHours}
+              <br />
+              Phone: <a href={HOSPITAL.phoneHref}>{HOSPITAL.phoneDisplay}</a>
               <span className="only-desktop-inline">
-                <br />
-                <a href={HOSPITAL.phoneHref}>{HOSPITAL.phoneDisplay}</a> ·{' '}
-                <a href={`mailto:${HOSPITAL.email}`}>{HOSPITAL.email}</a>
+                {' '}
+                · <a href={`mailto:${HOSPITAL.email}`}>{HOSPITAL.email}</a>
               </span>
             </address>
             <div className="visit__ctas only-mobile">
@@ -212,7 +217,7 @@ export function Home() {
               </Button>
             </div>
           </div>
-          <PhotoSlot tone="mint" className="visit__map visit__map--lg only-desktop" label="map embed · hospital location, Pune" />
+          <PhotoSlot tone="mint" className="visit__map visit__map--lg only-desktop" label="map embed · Mundhwa - Manjari Rd, Pune 411036" />
         </section>
       </main>
       <SiteFooter />
