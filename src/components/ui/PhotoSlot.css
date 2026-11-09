@@ -1,0 +1,56 @@
+.photo {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  padding: 14px;
+}
+
+.photo--sand {
+  background: repeating-linear-gradient(135deg, #ede3d3 0 8px, #f4ecdf 8px 16px);
+}
+
+.photo--teal {
+  background: repeating-linear-gradient(135deg, #1f5a5e 0 8px, #1a5155 8px 16px);
+}
+
+.photo--mint {
+  background: repeating-linear-gradient(135deg, #dfe8e5 0 8px, #e8efec 8px 16px);
+}
+
+.photo--blush {
+  background: repeating-linear-gradient(135deg, #e3cbc2 0 5px, #edd8d0 5px 10px);
+}
+
+.photo__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo__label {
+  font: 500 10px/1.3 var(--font-mono);
+  color: #6b5e4e;
+}
+
+@media (min-width: 900px) {
+  .photo__label {
+    font-size: 11px;
+  }
+}
+
+.photo__label--top {
+  position: absolute;
+  top: 16px;
+  left: 18px;
+}
+
+.photo--teal .photo__label {
+  color: #a9c7c4;
+}
+
+.photo--mint .photo__label {
+  color: #4f6664;
+}

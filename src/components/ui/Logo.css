@@ -1,0 +1,61 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo--wide {
+  gap: 12px;
+}
+
+.logo-mark {
+  flex: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.logo-mark--default {
+  background: var(--teal-700);
+  color: var(--ivory);
+}
+
+.logo-mark--inverse {
+  background: var(--ivory);
+  color: var(--teal-700);
+}
+
+.logo__name {
+  display: block;
+  font: 500 18px/1 var(--font-serif);
+  color: var(--teal-900);
+}
+
+.logo--wide .logo__name {
+  font-size: 21px;
+}
+
+.logo--inverse .logo__name {
+  color: var(--ivory);
+  font-size: 17px;
+}
+
+.logo__caption {
+  display: block;
+  margin-top: 3px;
+  font: 500 10px/1.4 var(--font-sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.logo--inverse .logo__caption {
+  color: #8fb1ae;
+  margin-top: 0;
+}
