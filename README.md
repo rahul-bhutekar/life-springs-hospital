@@ -21,6 +21,15 @@ npm run build      # type-check + production build to dist/
 | `/assistant`   | Scripted, hospital-approved enquiry assistant (chat)                        |
 | `/admin`       | Owner dashboard: KPIs, enquiries, AI summary, WhatsApp drafts, feedback     |
 
+## Screenshots
+
+| Desktop | Phone |
+| --- | --- |
+| ![Home, desktop](docs/screenshots/desktop-home.png) | ![Home, phone](docs/screenshots/phone-home.png) |
+| ![Dashboard, desktop](docs/screenshots/desktop-dashboard.png) | ![Dashboard, phone](docs/screenshots/phone-dashboard.png) |
+
+More in [`docs/screenshots/`](docs/screenshots/).
+
 ## Structure
 
 ```
