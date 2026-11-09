@@ -6,6 +6,7 @@ import { Button } from '../components/ui/Button';
 import { Eyebrow } from '../components/ui/Eyebrow';
 import { MapEmbed } from '../components/ui/MapEmbed';
 import { PhotoSlot } from '../components/ui/PhotoSlot';
+import { IMAGES } from '../data/images';
 import { DOCTOR, FACILITIES, FEATURED_STORY, HOSPITAL, SERVICES, TESTIMONIALS } from '../data/hospital';
 import './Home.css';
 
@@ -53,7 +54,7 @@ export function Home() {
           </div>
 
           <div className="hero__media">
-            <PhotoSlot className="hero__photo" label="photo · mother & newborn skin-to-skin, natural light">
+            <PhotoSlot className="hero__photo" label="photo · mother & newborn skin-to-skin, natural light" image={IMAGES.hero} eager>
               <div className="hero__badge only-mobile">
                 <div className="hero__badge-value">24 × 7</div>
                 <div className="hero__badge-label">Labour ward &amp; NICU</div>
@@ -100,7 +101,7 @@ export function Home() {
         {/* Doctor */}
         <section className="container">
           <div className="doc-feature">
-            <PhotoSlot tone="teal" className="doc-feature__photo" label={`portrait · ${DOCTOR.name}, warm smile`} />
+            <PhotoSlot tone="teal" className="doc-feature__photo" label={`portrait · ${DOCTOR.name}, warm smile`} image={IMAGES.doctor} />
             <div className="doc-feature__body">
               <Eyebrow tone="blush">
                 <span className="only-mobile-inline">Lead consultant</span>
@@ -135,7 +136,7 @@ export function Home() {
           <ul className="facilities">
             {FACILITIES.map((f) => (
               <li key={f.title} className="facility">
-                <PhotoSlot className="facility__photo" label={f.photo} />
+                <PhotoSlot className="facility__photo" label={f.photo} image={f.image} />
                 <h3 className="facility__title">{f.title}</h3>
                 <p className="facility__desc">{f.desc}</p>
               </li>

@@ -1,3 +1,5 @@
+import { IMAGES } from './images';
+
 /**
  * Hospital details shown across the site.
  * Address and phone number are confirmed by the hospital.
@@ -66,10 +68,10 @@ export const SERVICES: Service[] = [
 ];
 
 export const FACILITIES = [
-  { title: 'Labour & delivery suites', desc: 'Calm, private, family-friendly.', photo: 'photo · birthing suite' },
-  { title: 'Private recovery rooms', desc: 'Rest with your baby beside you.', photo: 'photo · recovery room' },
-  { title: 'Level II NICU', desc: 'Round-the-clock newborn care.', photo: 'photo · NICU, soft light' },
-  { title: 'Lactation lounge', desc: 'Guidance from trained counsellors.', photo: 'photo · feeding lounge' },
+  { title: 'Labour & delivery suites', desc: 'Calm, private, family-friendly.', photo: 'photo · birthing suite', image: IMAGES.deliverySuite },
+  { title: 'Private recovery rooms', desc: 'Rest with your baby beside you.', photo: 'photo · recovery room', image: IMAGES.recoveryRoom },
+  { title: 'Level II NICU', desc: 'Round-the-clock newborn care.', photo: 'photo · NICU, soft light', image: IMAGES.nicu },
+  { title: 'Lactation lounge', desc: 'Guidance from trained counsellors.', photo: 'photo · feeding lounge', image: IMAGES.lactation },
 ];
 
 export type Testimonial = { quote: string; name: string; detail: string; tone: 'blush' | 'mint' | 'cream' };

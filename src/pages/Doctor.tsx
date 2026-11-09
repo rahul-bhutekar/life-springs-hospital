@@ -4,6 +4,7 @@ import { SiteHeader } from '../components/site/SiteHeader';
 import { BackButton } from '../components/ui/BackButton';
 import { Button } from '../components/ui/Button';
 import { PhotoSlot } from '../components/ui/PhotoSlot';
+import { IMAGES } from '../data/images';
 import { DOCTOR, HOSPITAL } from '../data/hospital';
 import './Doctor.css';
 
@@ -15,7 +16,7 @@ export function Doctor() {
       </div>
       <main className="doctor">
         <div className="doctor__media">
-          <PhotoSlot className="doctor__photo" label={`portrait · ${DOCTOR.name} in consultation room`} />
+          <PhotoSlot className="doctor__photo" label={`portrait · ${DOCTOR.name} in consultation room`} image={IMAGES.doctor} eager />
           <BackButton className="doctor__back only-mobile" />
           <div className="doctor__fade only-mobile" aria-hidden="true" />
         </div>

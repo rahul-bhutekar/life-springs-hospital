@@ -42,11 +42,12 @@ src/
   data/hospital.ts      hospital, doctor, services, facilities, testimonials copy
   data/assistant.ts     assistant's approved answers and conversation logic
   data/dashboard.ts     sample dashboard data
+  data/images.ts        photos used on the site, with alt text
   lib/api.ts            appointment submission stub — connect to the real backend here
 ```
 
 ## Before launch
 
 - Hospital address and phone number are real. Doctor credentials, email, timings and testimonials are still **placeholder copy** (`src/data/hospital.ts`).
-- Photos are striped placeholders with art-direction captions; pass `src` to `<PhotoSlot>` to use real photography.
+- Photos are temporary Unsplash stock images (`src/assets/images/`, credits in `docs/IMAGE_CREDITS.md`). Replace them with the hospital's own photos, especially Dr. Shinde's portrait.
 - `submitAppointmentRequest` (`src/lib/api.ts`) and the dashboard data are stubs.
