@@ -7,7 +7,7 @@ import { Eyebrow } from '../components/ui/Eyebrow';
 import { MapEmbed } from '../components/ui/MapEmbed';
 import { PhotoSlot } from '../components/ui/PhotoSlot';
 import { IMAGES } from '../data/images';
-import { DOCTOR, FACILITIES, FEATURED_STORY, HOSPITAL, SERVICES, TESTIMONIALS } from '../data/hospital';
+import { DOCTOR, FACILITIES, HOSPITAL, SERVICES, TESTIMONIALS } from '../data/hospital';
 import './Home.css';
 
 export function Home() {
@@ -138,36 +138,22 @@ export function Home() {
         </section>
 
         {/* Stories */}
-        <section id="stories" className="section container">
-          <figure className="story-feature only-mobile">
-            <div className="story-feature__mark" aria-hidden="true">
-              “
-            </div>
-            <blockquote className="story-feature__quote">{FEATURED_STORY.quote}</blockquote>
-            <figcaption className="story-feature__by">
-              <PhotoSlot tone="blush" className="story-feature__avatar" label="" />
-              <span>
-                <strong>{FEATURED_STORY.name}</strong>
-                <span>{FEATURED_STORY.detail}</span>
-              </span>
-            </figcaption>
-          </figure>
-
-          <div className="only-desktop">
-            <h2 className="section__title">Families who trusted us</h2>
-            <ul className="stories">
-              {TESTIMONIALS.map((t) => (
-                <li key={t.name} className={`story story--${t.tone}`}>
-                  <div className="story__stars" role="img" aria-label="5 out of 5 stars">
-                    ★★★★★
-                  </div>
-                  <blockquote className="story__quote">{t.quote}</blockquote>
-                  <div className="story__name">{t.name}</div>
-                  <div className="story__detail">{t.detail}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <section id="stories" className="section" aria-labelledby="stories-title">
+          <h2 id="stories-title" className="section__title container">
+            Families who trusted us
+          </h2>
+          <ul className="stories">
+            {TESTIMONIALS.map((t) => (
+              <li key={t.name} className={`story story--${t.tone}`}>
+                <div className="story__stars" role="img" aria-label="5 out of 5 stars">
+                  ★★★★★
+                </div>
+                <blockquote className="story__quote">{t.quote}</blockquote>
+                <div className="story__name">{t.name}</div>
+                <div className="story__detail">{t.detail}</div>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* Visit */}

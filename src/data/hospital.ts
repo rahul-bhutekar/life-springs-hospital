@@ -102,13 +102,6 @@ export const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
-export const FEATURED_STORY = {
-  quote:
-    'The nurses explained everything twice, in Marathi, without ever making me feel rushed. I felt held the whole way through.',
-  name: 'Snehal K.',
-  detail: 'Delivered at Life Springs Maternity Hospital, 2026',
-};
-
 export const APPOINTMENT_TYPES = [
   'First pregnancy consultation',
   'Routine antenatal check-up',
