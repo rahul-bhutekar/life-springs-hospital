@@ -75,10 +75,6 @@ export function Home() {
               <span className="only-mobile-inline">Our care</span>
               <span className="only-desktop-inline">Care for every stage</span>
             </h2>
-            <Link to="/#services" className="section__link">
-              <span className="only-mobile-inline">All services</span>
-              <span className="only-desktop-inline">View all services →</span>
-            </Link>
           </div>
           <ul className="services">
             {SERVICES.map((s) => (
@@ -90,9 +86,6 @@ export function Home() {
                   <h3 className="service__title">{s.title}</h3>
                   <p className="service__desc">{s.desc}</p>
                 </div>
-                <span className="service__chev only-mobile" aria-hidden="true">
-                  ›
-                </span>
               </li>
             ))}
           </ul>
