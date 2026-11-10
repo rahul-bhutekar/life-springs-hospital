@@ -43,8 +43,8 @@
   display: inline-flex;
 }
 
-/* Very narrow phones: drop the logo so the title has room */
-@media (max-width: 359px) {
+/* Phones: drop the logo so the hospital name has room */
+@media (max-width: 599px) {
   .assistant__logo {
     display: none;
   }
@@ -69,7 +69,7 @@
   color: #b9d3d0;
 }
 
-.assistant__title p span {
+.assistant__title p > span:first-child {
   width: 7px;
   height: 7px;
   border-radius: 50%;

@@ -37,10 +37,12 @@ export function Assistant() {
             <LogoMark size={40} tone="inverse" />
           </span>
           <div className="assistant__title">
-            <h1>Life Springs Assistant</h1>
+            <h1>{HOSPITAL.name}</h1>
             <p>
               <span aria-hidden="true" />
-              Hospital-approved answers
+              <span>
+                Assistant<span className="only-desktop-inline"> · hospital-approved answers</span>
+              </span>
             </p>
           </div>
           <button

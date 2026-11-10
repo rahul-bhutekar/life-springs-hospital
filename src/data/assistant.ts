@@ -39,7 +39,7 @@ export const initialChat = (): ChatState => ({
   messages: [
     msg(
       'bot',
-      "Namaste! I'm the Life Springs assistant. I can help with appointments, our maternity services, visiting hours and preparing for delivery.",
+      "Namaste! I'm the Life Springs Maternity Hospital assistant. I can help with appointments, our maternity services, visiting hours and preparing for delivery.",
     ),
     msg(
       'note',

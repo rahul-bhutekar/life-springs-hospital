@@ -201,7 +201,7 @@ export function Appointment() {
               <span className={`appt__check ${consent ? 'is-on' : ''}`} aria-hidden="true">
                 {consent ? '✓' : ''}
               </span>
-              I agree to be contacted by Life Springs on call or WhatsApp about this enquiry.
+              I agree to be contacted by Life Springs Maternity Hospital on call or WhatsApp about this enquiry.
             </label>
             {errors.consent && <p className="appt__error">{errors.consent}</p>}
 

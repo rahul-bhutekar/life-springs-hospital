@@ -182,7 +182,7 @@ export function Home() {
           <div className="visit__info">
             <h2 className="section__title">
               <span className="only-mobile-inline">Visit us</span>
-              <span className="only-desktop-inline">Visit Life Springs</span>
+              <span className="only-desktop-inline">Visit Life Springs Maternity Hospital</span>
             </h2>
             <MapEmbed className="visit__map only-mobile" />
             <address className="visit__address">

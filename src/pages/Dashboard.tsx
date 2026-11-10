@@ -16,7 +16,7 @@ import {
   type EnquiryStatus,
   type WhatsAppDraft,
 } from '../data/dashboard';
-import { DOCTOR } from '../data/hospital';
+import { DOCTOR, HOSPITAL } from '../data/hospital';
 import './Dashboard.css';
 
 const TABS: { label: string; filter: EnquiryStatus | null }[] = [
@@ -130,7 +130,7 @@ export function Dashboard() {
         <div className="dash__brand">
           <LogoMark size={34} tone="inverse" />
           <div>
-            <div className="dash__brand-name">Life Springs</div>
+            <div className="dash__brand-name">{HOSPITAL.name}</div>
             <div className="dash__brand-sub">Admin</div>
           </div>
         </div>
@@ -157,13 +157,13 @@ export function Dashboard() {
           <div>
             <div className="dash__date">
               <span className="only-desktop-inline">{dateLong}</span>
-              <span className="only-mobile-inline">{dateShort}</span>
+              <span className="only-mobile-inline">{HOSPITAL.name}</span>
             </div>
             <h1 className="dash__title">
               <span className="only-desktop-inline">
                 {greeting(now)}, {DOCTOR.shortName}
               </span>
-              <span className="only-mobile-inline">Today at Life Springs</span>
+              <span className="only-mobile-inline">Today, {dateShort}</span>
             </h1>
           </div>
           <div className="dash__tools only-desktop">

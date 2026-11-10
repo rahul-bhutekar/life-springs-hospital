@@ -45,14 +45,14 @@ export const WHATSAPP_DRAFTS: WhatsAppDraft[] = [
     name: 'Priya Deshmukh',
     phone: '+91 98220 41736',
     tag: 'First consultation',
-    text: 'Namaste Priya ji, thank you for contacting Life Springs Hospital. Dr. Deepak Shinde can see you today between 5–8 pm. Please reply YES to confirm, or tell us a time that suits you.',
+    text: 'Namaste Priya ji, thank you for contacting Life Springs Maternity Hospital. Dr. Deepak Shinde can see you today between 5–8 pm. Please reply YES to confirm, or tell us a time that suits you.',
   },
   {
     id: 'w2',
     name: 'Rutuja Pawar',
     phone: '+91 99223 10458',
     tag: 'Follow-up',
-    text: 'Hello Rutuja ji, this is Life Springs Hospital. We tried calling about your consultation request for Thu 12 Nov. Shall we book the 11 am slot for you?',
+    text: 'Hello Rutuja ji, this is Life Springs Maternity Hospital. We tried calling about your consultation request for Thu 12 Nov. Shall we book the 11 am slot for you?',
   },
   {
     id: 'w3',

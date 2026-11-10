@@ -12,8 +12,7 @@ const ADDRESS =
   'Sr No. 35, Mundhwa - Manjari Rd, above Kastura Hotel, near New Orbis School, Keshav Nagar, Mundhwa, Pune, Maharashtra 411036';
 
 export const HOSPITAL = {
-  name: 'Life Springs Hospital',
-  shortName: 'Life Springs',
+  name: 'Life Springs Maternity Hospital',
   tagline: 'Maternity · Pune',
   phoneDisplay: '070318 80088',
   phoneHref: 'tel:+917031880088',
@@ -28,7 +27,7 @@ export const HOSPITAL = {
   ],
   opdHours: 'OPD: Mon–Sat, 10am–1pm · 5pm–8pm',
   emergencyHours: 'Emergency & labour ward: 24 × 7',
-  /** Exact pin, from the hospital's Google Maps listing ("Life Springs Maternity Hospital"). */
+  /** Exact pin, from the hospital's Google Maps listing. */
   location: LOCATION,
   /** The hospital's own Google Maps share link (opens its listing). */
   mapsHref: 'https://maps.app.goo.gl/6G1mGAhUpxGDZqVLA',
@@ -48,7 +47,7 @@ export const DOCTOR = {
   speciality: 'Obstetrician & Gynaecologist · Normal delivery & high-risk pregnancy',
   quote: 'Every mother deserves time, clear answers, and a birth plan she truly understands.',
   about:
-    "Dr. Shinde believes every mother deserves time, clear answers and a birth plan she understands. He leads Life Springs' antenatal, delivery and high-risk pregnancy care.",
+    "Dr. Shinde believes every mother deserves time, clear answers and a birth plan she understands. He leads antenatal, delivery and high-risk pregnancy care at Life Springs Maternity Hospital.",
   stats: [
     { value: 'XX+', label: 'Years in practice' },
     { value: '3', label: 'Languages: मराठी, हिंदी, Eng' },
@@ -107,7 +106,7 @@ export const FEATURED_STORY = {
   quote:
     'The nurses explained everything twice, in Marathi, without ever making me feel rushed. I felt held the whole way through.',
   name: 'Snehal K.',
-  detail: 'Delivered at Life Springs, 2026',
+  detail: 'Delivered at Life Springs Maternity Hospital, 2026',
 };
 
 export const APPOINTMENT_TYPES = [

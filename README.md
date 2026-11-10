@@ -1,6 +1,6 @@
-# Life Springs Hospital
+# Life Springs Maternity Hospital
 
-Patient website, AI enquiry assistant and owner dashboard for Life Springs Hospital, a maternity hospital in Pune.
+Patient website, AI enquiry assistant and owner dashboard for Life Springs Maternity Hospital, Pune.
 Built with React, TypeScript and Vite.
 
 ## Run it

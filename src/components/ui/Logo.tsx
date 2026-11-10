@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { HOSPITAL } from '../../data/hospital';
 import './Logo.css';
 
 type Props = {
@@ -18,12 +19,12 @@ export function LogoMark({ size = 36, tone = 'default' }: { size?: number; tone?
   );
 }
 
-export function Logo({ layout = 'stacked', caption = 'Maternity · Pune', tone = 'default', size, to = '/' }: Props) {
+export function Logo({ layout = 'stacked', caption = 'Maternity Hospital · Pune', tone = 'default', size, to = '/' }: Props) {
   return (
-    <Link to={to} className={`logo logo--${layout} logo--${tone}`} aria-label="Life Springs Hospital — home">
+    <Link to={to} className={`logo logo--${layout} logo--${tone}`} aria-label={`${HOSPITAL.name} — home`}>
       <LogoMark size={size ?? (layout === 'wide' ? 40 : 36)} tone={tone === 'inverse' ? 'inverse' : 'default'} />
       {layout === 'wide' ? (
-        <span className="logo__name">Life Springs Hospital</span>
+        <span className="logo__name">{HOSPITAL.name}</span>
       ) : (
         <span>
           <span className="logo__name">Life Springs</span>
