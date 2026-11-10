@@ -77,8 +77,21 @@
   font-size: 12px;
 }
 
-.dash__session {
+.dash__site {
   margin-top: auto;
+  padding: 11px 12px;
+  border-radius: 12px;
+  font: 500 14px var(--font-sans);
+  color: #dce8e6;
+}
+
+.dash__site:hover {
+  color: var(--ivory);
+  background: rgba(251, 247, 240, 0.05);
+}
+
+.dash__session {
+  margin-top: 8px;
   padding: 14px 12px;
   border-radius: var(--r-sm);
   background: rgba(251, 247, 240, 0.06);
@@ -136,6 +149,23 @@
     margin-top: 6px;
     font-size: 34px;
   }
+}
+
+.dash__mobile-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash__site-mobile {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-btn);
+  display: inline-flex;
+  align-items: center;
+  font: 600 13px var(--font-sans);
+  color: var(--teal-700);
 }
 
 .dash__avatar {

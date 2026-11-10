@@ -33,14 +33,21 @@
   flex: none;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 18px 18px 14px;
+  gap: 10px;
+  padding: 18px 16px 14px 14px;
   background: var(--teal-700);
   color: var(--ivory);
 }
 
-.assistant__head a {
+.assistant__logo {
   display: inline-flex;
+}
+
+/* Very narrow phones: drop the logo so the title has room */
+@media (max-width: 359px) {
+  .assistant__logo {
+    display: none;
+  }
 }
 
 .assistant__title {

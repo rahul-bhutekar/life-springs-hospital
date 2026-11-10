@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { BackButton } from '../components/ui/BackButton';
 import { LogoMark } from '../components/ui/Logo';
 import { HOSPITAL } from '../data/hospital';
 import { PLACEHOLDERS, QUICK_REPLIES, initialChat, respond, type ChatState } from '../data/assistant';
@@ -32,9 +32,10 @@ export function Assistant() {
     <main className="assistant">
       <div className="assistant__panel">
         <header className="assistant__head">
-          <Link to="/" aria-label="Back to Life Springs home">
-            <LogoMark size={44} tone="inverse" />
-          </Link>
+          <BackButton tone="inverse" label="Back to the website" />
+          <span className="assistant__logo">
+            <LogoMark size={40} tone="inverse" />
+          </span>
           <div className="assistant__title">
             <h1>Life Springs Assistant</h1>
             <p>

@@ -12,3 +12,12 @@
   font: 500 22px/1 var(--font-sans);
   padding: 0 0 3px;
 }
+
+.back-btn--inverse {
+  background: rgba(251, 247, 240, 0.14);
+  color: var(--ivory);
+}
+
+.back-btn--inverse:hover {
+  background: rgba(251, 247, 240, 0.24);
+}

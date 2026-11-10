@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { LogoMark } from '../components/ui/Logo';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { Stars } from '../components/ui/Stars';
@@ -141,6 +142,9 @@ export function Dashboard() {
             </a>
           ))}
         </nav>
+        <Link to="/" className="dash__site">
+          ← View website
+        </Link>
         <div className="dash__session">
           <strong>Signed in · {DOCTOR.shortName}</strong>
           2-step verified · auto sign-out 30 min
@@ -181,8 +185,13 @@ export function Dashboard() {
               Export CSV
             </button>
           </div>
-          <div className="dash__avatar only-mobile" aria-label={`Signed in as ${DOCTOR.name}`}>
-            DS
+          <div className="dash__mobile-actions only-mobile">
+            <Link to="/" className="dash__site-mobile">
+              Website
+            </Link>
+            <div className="dash__avatar" role="img" aria-label={`Signed in as ${DOCTOR.name}`}>
+              DS
+            </div>
           </div>
         </header>
 
