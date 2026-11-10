@@ -3,6 +3,7 @@ import { MobileActionBar } from '../components/site/MobileActionBar';
 import { SiteFooter } from '../components/site/SiteFooter';
 import { SiteHeader } from '../components/site/SiteHeader';
 import { Button } from '../components/ui/Button';
+import { CallLink } from '../components/ui/CallLink';
 import { Eyebrow } from '../components/ui/Eyebrow';
 import { MapEmbed } from '../components/ui/MapEmbed';
 import { PhotoSlot } from '../components/ui/PhotoSlot';
@@ -175,16 +176,14 @@ export function Home() {
               <br />
               {HOSPITAL.emergencyHours}
               <br />
-              Phone: <a href={HOSPITAL.phoneHref}>{HOSPITAL.phoneDisplay}</a>
+              Phone: <CallLink className="visit__phone">{HOSPITAL.phoneDisplay}</CallLink>
               <span className="only-desktop-inline">
                 {' '}
                 · <a href={`mailto:${HOSPITAL.email}`}>{HOSPITAL.email}</a>
               </span>
             </address>
             <div className="visit__ctas only-mobile">
-              <Button href={HOSPITAL.phoneHref} variant="outline" block>
-                Call hospital
-              </Button>
+              <CallLink className="btn btn--outline btn--md btn--block">Call hospital</CallLink>
               <Button href={HOSPITAL.directionsHref} external variant="outline" block>
                 Directions
               </Button>

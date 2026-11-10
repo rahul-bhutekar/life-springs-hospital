@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "test": "vitest run",
-    "build:embed": "tsc -b && VITE_ROUTER=memory VITE_NO_IFRAMES=true vite build --base ./ --outDir dist-embed"
+    "build:embed": "tsc -b && VITE_ROUTER=memory VITE_NO_IFRAMES=true VITE_NO_TEL=true vite build --base ./ --outDir dist-embed"
   },
   "dependencies": {
     "react": "18.3.1",

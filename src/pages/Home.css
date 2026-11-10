@@ -506,6 +506,18 @@
   color: var(--ink-2);
 }
 
+.visit__phone {
+  color: var(--teal-700);
+}
+
+button.visit__phone {
+  padding: 0;
+  border: 0;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .visit__ctas {
   display: grid;
   grid-template-columns: 1fr 1fr;
