@@ -1,0 +1,38 @@
+.mobile-action-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 15;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 16px calc(22px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, var(--ivory) 70%, rgba(251, 247, 240, 0));
+}
+
+.mobile-action-bar__spacer {
+  height: 104px;
+}
+
+.mobile-action-bar .btn--primary {
+  flex: 1;
+}
+
+.mobile-action-bar__ask {
+  flex: none;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--blush-300);
+  color: var(--clay-900);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 13px var(--font-sans);
+}
+
+.mobile-action-bar__ask:hover {
+  color: var(--clay-900);
+  background: #e4c2b7;
+}

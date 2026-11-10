@@ -1,0 +1,131 @@
+.map {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 22px;
+  background: #f2efe9;
+  border: 1px solid var(--line);
+}
+
+.map__static {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.map__frame {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.map__credit {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.8);
+  font: 500 10px var(--font-sans);
+  color: var(--ink-2);
+}
+
+.map__open {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: var(--ivory);
+  color: var(--teal-700);
+  font: 600 13px var(--font-sans);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.35);
+}
+
+.map__open:hover {
+  background: #fff;
+  color: var(--teal-900);
+}
+
+/* Pin marks the exact centre of the static map (the hospital). */
+.map__pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 30px;
+  height: 30px;
+  margin: -30px 0 0 0;
+  border-radius: 50% 50% 50% 0;
+  background: var(--clay);
+  border: 2px solid #fff;
+  transform: rotate(-45deg);
+  transform-origin: 0 100%;
+  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.45);
+}
+
+.map__pin::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.map__card {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--ivory);
+  box-shadow: 0 8px 20px -10px rgba(0, 0, 0, 0.3);
+  text-decoration: none;
+}
+
+.map__card:hover {
+  background: #fff;
+}
+
+@media (min-width: 900px) {
+  .map__card {
+    right: auto;
+    min-width: 280px;
+  }
+}
+
+.map__title {
+  font: 600 14px var(--font-sans);
+  color: var(--ink);
+}
+
+.map__addr {
+  font: 400 13px var(--font-sans);
+  color: var(--muted);
+}
+
+.map__cta {
+  margin-top: 4px;
+  font: 600 13px var(--font-sans);
+  color: var(--teal-700);
+}
+
+@media (max-width: 899px) {
+  .map__card {
+    left: 10px;
+    right: auto;
+    bottom: 10px;
+    padding: 9px 12px;
+  }
+  .map__addr {
+    display: none;
+  }
+}

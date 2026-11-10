@@ -1,0 +1,23 @@
+.back-btn {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  border: 0;
+  background: var(--ivory-200);
+  color: var(--teal-700);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: 500 22px/1 var(--font-sans);
+  padding: 0 0 3px;
+}
+
+.back-btn--inverse {
+  background: rgba(251, 247, 240, 0.14);
+  color: var(--ivory);
+}
+
+.back-btn--inverse:hover {
+  background: rgba(251, 247, 240, 0.24);
+}

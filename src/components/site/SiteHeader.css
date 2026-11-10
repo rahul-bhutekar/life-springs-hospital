@@ -1,0 +1,115 @@
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: rgba(251, 247, 240, 0.94);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.site-header__inner {
+  max-width: var(--page-max);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px var(--gutter) 14px;
+}
+
+@media (min-width: 900px) {
+  .site-header {
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header__inner {
+    padding-top: 22px;
+    padding-bottom: 22px;
+  }
+}
+
+.site-header__nav {
+  display: flex;
+  gap: 32px;
+}
+
+.site-header__nav a {
+  font: 500 15px var(--font-sans);
+  color: var(--ink-2);
+}
+
+.site-header__nav a:hover {
+  color: var(--teal-700);
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+@media (min-width: 900px) {
+  .site-header__actions {
+    gap: 10px;
+  }
+}
+
+.site-header__call {
+  height: 40px;
+  padding: 0 14px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-btn);
+  display: inline-flex;
+  align-items: center;
+  font: 600 13px var(--font-sans);
+  color: var(--teal-700);
+}
+
+.site-header__phone {
+  height: 42px;
+  padding: 0 20px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--line-btn);
+  display: inline-flex;
+  align-items: center;
+  font: 600 14px var(--font-sans);
+  color: var(--teal-700);
+}
+
+.site-header__menu {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--ivory-200);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 0;
+}
+
+.site-header__menu span {
+  display: block;
+  width: 16px;
+  height: 1.5px;
+  background: var(--teal-700);
+}
+
+.site-header__menu span:last-child {
+  width: 10px;
+  margin-left: -6px;
+}
+
+.site-header__drawer {
+  display: flex;
+  flex-direction: column;
+  padding: 4px var(--gutter) 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__drawer a {
+  padding: 13px 0;
+  font: 500 17px var(--font-sans);
+  color: var(--ink);
+  border-top: 1px solid var(--line-soft);
+}

@@ -1,0 +1,73 @@
+/* Life Springs Maternity Hospital design tokens — deep teal + warm ivory, blush accents. */
+:root {
+  /* Teal */
+  --teal-900: #0e3538;
+  --teal-700: #164b4f;
+  --teal-600: #1f5a5e;
+  --teal-100: #c9dcda;
+  --teal-50: #e3eeec;
+  --success: #2e8a7e;
+  --success-text: #2e7a6e;
+
+  /* Ivory / sand */
+  --ivory: #fbf7f0;
+  --ivory-100: #f7f2ea;
+  --ivory-200: #f1e9dc;
+  --sand: #f7f3ec;
+  --sand-row: #faf6f0;
+  --cream: #f3ece0;
+
+  /* Blush / clay */
+  --blush-100: #f6e6e0;
+  --blush-300: #ebcfc6;
+  --blush-500: #c98f80;
+  --clay: #9a5b4e;
+  --clay-700: #7a3e32;
+  --clay-900: #5a2f26;
+  --clay-ink: #3a2a26;
+  --clay-muted: #6e5a55;
+
+  /* Ink */
+  --ink: #1c2a2b;
+  --ink-2: #3d4b4a;
+  --ink-3: #4e5d5c;
+  --muted: #5d6b6a;
+  --muted-2: #6b7877;
+  --chevron: #9db0ae;
+
+  /* Lines */
+  --line: #efe7da;
+  --line-soft: #f1eadf;
+  --line-strong: #e2d8c8;
+  --line-btn: #d9cfbf;
+  --line-divider: #e6ddcf;
+  --line-dash: #ece3d5;
+
+  /* Type */
+  --font-serif: 'Newsreader', Georgia, serif;
+  --font-sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+  /* Radii */
+  --r-sm: 14px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 24px;
+  --r-2xl: 28px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-cta: 0 10px 24px -12px rgba(22, 75, 79, 0.75);
+  --shadow-float: 0 20px 40px -20px rgba(14, 53, 56, 0.35);
+  --shadow-hover: 0 18px 36px -22px rgba(14, 53, 56, 0.35);
+
+  /* Layout */
+  --gutter: 20px;
+  --page-max: 1280px;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --gutter: 56px;
+  }
+}

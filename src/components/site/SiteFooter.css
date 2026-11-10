@@ -1,0 +1,25 @@
+.site-footer__inner {
+  max-width: var(--page-max);
+  margin: 36px auto 0;
+  padding: 20px var(--gutter) 24px;
+  border-top: 1px solid var(--line-divider);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font: 400 12px/1.6 var(--font-sans);
+  color: var(--muted-2);
+}
+
+.site-footer a {
+  color: inherit;
+}
+
+@media (min-width: 900px) {
+  .site-footer__inner {
+    margin-top: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    padding-top: 24px;
+    font-size: 13px;
+  }
+}
