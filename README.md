@@ -9,6 +9,7 @@ Built with React, TypeScript and Vite.
 npm install
 npm run dev        # http://localhost:5173
 npm run build      # type-check + production build to dist/
+npm test           # run the assistant's conversation tests
 ```
 
 ## Pages
@@ -46,8 +47,22 @@ src/
   lib/api.ts            appointment submission stub — connect to the real backend here
 ```
 
+## How the assistant works
+
+The assistant (`/assistant`) is **scripted, not an AI model**: every reply is a fixed, hospital-approved
+answer chosen by matching keywords in what the visitor types (`src/data/assistant.ts`). For each message it:
+
+1. Shows the labour-ward warning for emergency words (pain, bleeding, medicine…), even mid-booking.
+2. Stops a booking on "cancel".
+3. Treats the message as the answer if it just asked something (booking details, or "would you like a call back?").
+4. Matches approved topics (booking, packing, visiting hours, OPD timings, postnatal care, services, location, phone), then small talk (hi, thanks, bye, help).
+5. Otherwise says it has no approved answer and offers a call back.
+
+To change an answer or add a topic, edit `ANSWERS`, `MENU` and the keyword patterns in `RE`, then add a case
+to `src/data/assistant.test.ts` and run `npm test`.
+
 ## Before launch
 
 - Hospital address and phone number are real. Doctor credentials, email, timings and testimonials are still **placeholder copy** (`src/data/hospital.ts`).
 - Photos are temporary Unsplash stock images (`src/assets/images/`, credits in `docs/IMAGE_CREDITS.md`). Replace them with the hospital's own photos, especially Dr. Shinde's portrait.
-- `submitAppointmentRequest` (`src/lib/api.ts`) and the dashboard data are stubs.
+- `submitAppointmentRequest` (`src/lib/api.ts`) and the dashboard data are stubs. The assistant's booking and call-back requests are not sent anywhere yet either; connect them to the same backend.
