@@ -2,8 +2,8 @@ import { useMemo, useState, type FormEvent } from 'react';
 import { SiteHeader } from '../components/site/SiteHeader';
 import { BackButton } from '../components/ui/BackButton';
 import { Button } from '../components/ui/Button';
-import { APPOINTMENT_TYPES, OPD_SLOTS } from '../data/hospital';
-import { submitAppointmentRequest } from '../lib/api';
+import { APPOINTMENT_TYPES, HOSPITAL, OPD_SLOTS } from '../data/hospital';
+import { ApiError, submitAppointmentRequest } from '../lib/api';
 import { formatIndianMobile, upcomingOpdDays } from '../lib/dates';
 import './Appointment.css';
 
@@ -20,6 +20,8 @@ export function Appointment() {
   const [errors, setErrors] = useState<Errors>({});
   const [sending, setSending] = useState(false);
   const [reference, setReference] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [trap, setTrap] = useState(''); // spam trap, hidden from people
 
   const digits = phone.replace(/\D/g, '').slice(0, 10);
 
@@ -33,16 +35,24 @@ export function Appointment() {
     if (Object.keys(next).length) return;
 
     setSending(true);
+    setSubmitError(null);
     try {
       const receipt = await submitAppointmentRequest({
         name: name.trim(),
         phone: `+91${digits}`,
-        date: days[dateIdx].iso,
+        date: days[dateIdx].label,
         slot: OPD_SLOTS[slotIdx].id,
         type: APPOINTMENT_TYPES[typeIdx],
         consent,
+        website: trap,
       });
       setReference(receipt.reference);
+    } catch (err) {
+      setSubmitError(
+        err instanceof ApiError && (err.code === 'invalid' || err.code === 'rate_limited')
+          ? err.message
+          : `Sorry, we couldn't send your request. Please try again, or call us on ${HOSPITAL.phoneDisplay}.`,
+      );
     } finally {
       setSending(false);
     }
@@ -53,6 +63,7 @@ export function Appointment() {
     setName('');
     setPhone('');
     setErrors({});
+    setSubmitError(null);
   }
 
   return (
@@ -204,6 +215,18 @@ export function Appointment() {
               I agree to be contacted by Life Springs Maternity Hospital on call or WhatsApp about this enquiry.
             </label>
             {errors.consent && <p className="appt__error">{errors.consent}</p>}
+
+            {/* Spam trap: hidden from people and screen readers; bots that fill every field get caught. */}
+            <div className="appt__trap" aria-hidden="true">
+              <label htmlFor="appt-website">Website</label>
+              <input id="appt-website" tabIndex={-1} autoComplete="off" value={trap} onChange={(e) => setTrap(e.target.value)} />
+            </div>
+
+            {submitError && (
+              <p className="appt__submit-error" role="alert">
+                {submitError}
+              </p>
+            )}
 
             <div className="appt__submit">
               <Button type="submit" size="lg" block disabled={sending}>

@@ -61,7 +61,16 @@ export type ChatMessage =
  */
 export type Step = 'menu' | 'callback' | 'name' | 'phone' | 'date' | 'type';
 
-export type ChatState = { messages: ChatMessage[]; step: Step; lead: Lead };
+/**
+ * Something the page should do after this reply: send a finished booking to
+ * the hospital, or record a question there was no approved answer for.
+ * Set only on the reply that caused it.
+ */
+export type ChatEffect =
+  | { id: number; kind: 'enquiry'; lead: Required<Lead> }
+  | { id: number; kind: 'question'; question: string };
+
+export type ChatState = { messages: ChatMessage[]; step: Step; lead: Lead; effect?: ChatEffect };
 
 let nextId = 1;
 const msg = (role: 'bot' | 'user' | 'note', text: string): ChatMessage => ({ id: nextId++, role, text });
@@ -132,6 +141,7 @@ export function respond(state: ChatState, raw: string): ChatState {
   const user = msg('user', text);
   const say = (next: Partial<ChatState>, ...m: ChatMessage[]): ChatState => ({
     ...state,
+    effect: undefined,
     ...next,
     messages: [...state.messages, user, ...m],
   });
@@ -161,7 +171,10 @@ export function respond(state: ChatState, raw: string): ChatState {
       }
       return say(
         { step: 'phone', lead: { ...lead, name: text } },
-        msg('bot', `Thank you, ${text.split(' ')[0]}. Which mobile number should our team call or WhatsApp?`),
+        msg(
+          'bot',
+          `Thank you, ${text.split(' ')[0]}. Which mobile number should our team call or WhatsApp?\n\nBy sharing it, you agree that ${HOSPITAL.name} may contact you about this enquiry.`,
+        ),
       );
     case 'phone': {
       const digits = text.replace(/\D/g, '');
@@ -175,7 +188,7 @@ export function respond(state: ChatState, raw: string): ChatState {
     case 'type': {
       const done = { name: '', phone: '', date: '', ...lead, type: text };
       return say(
-        { step: 'menu', lead: {} },
+        { step: 'menu', lead: {}, effect: { id: nextId, kind: 'enquiry', lead: done } },
         { id: nextId++, role: 'summary', lead: done },
         msg('bot', 'Thank you. Our team will call you during OPD hours to confirm a time. Anything else I can help with?'),
       );
@@ -218,7 +231,7 @@ export function respond(state: ChatState, raw: string): ChatState {
 
   // 5. No approved answer: say so honestly and offer a call back.
   return say(
-    { step: 'callback' },
+    { step: 'callback', effect: { id: user.id, kind: 'question', question: text } },
     msg(
       'bot',
       "Sorry, I don't have an approved answer for that yet. Our team can answer it on a call. Would you like a call back?",
@@ -232,4 +245,9 @@ function startBooking(say: (next: Partial<ChatState>, ...m: ChatMessage[]) => Ch
       ? "Sure. I'll take a few details so our team can call you back."
       : 'Happy to help you request an appointment.';
   return say({ step: 'name', lead: {} }, msg('bot', `${intro} What's your full name?`));
+}
+
+/** Adds a warning note from the page (e.g. when sending a request failed). */
+export function addNote(state: ChatState, text: string): ChatState {
+  return { ...state, effect: undefined, messages: [...state.messages, msg('note', text)] };
 }

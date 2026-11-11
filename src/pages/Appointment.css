@@ -377,3 +377,20 @@ legend.appt__label {
   font: 600 14px var(--font-sans);
   color: var(--teal-700);
 }
+
+.appt__trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.appt__submit-error {
+  margin-top: 20px;
+  padding: 12px 14px;
+  border-radius: var(--r-sm);
+  background: var(--blush-100);
+  color: var(--clay-900);
+  font: 500 14px/1.5 var(--font-sans);
+}

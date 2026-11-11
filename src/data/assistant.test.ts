@@ -96,6 +96,23 @@ describe('booking flow', () => {
   });
 });
 
+describe('effects for the page to carry out', () => {
+  it('a finished booking asks the page to send the enquiry, once', () => {
+    const done = chat('book', 'Priya Deshmukh', '98220 41736', 'Tomorrow', 'Delivery planning');
+    expect(done.effect).toMatchObject({ kind: 'enquiry', lead: { name: 'Priya Deshmukh', phone: '98220 41736', date: 'Tomorrow', type: 'Delivery planning' } });
+    expect(respond(done, 'thanks').effect).toBeUndefined();
+  });
+
+  it('an unanswered question asks the page to record it', () => {
+    expect(chat('Do you have a cafeteria?').effect).toMatchObject({ kind: 'question', question: 'Do you have a cafeteria?' });
+    expect(chat('Visiting hours').effect).toBeUndefined();
+  });
+
+  it('asks for consent before taking a phone number', () => {
+    expect(lastReply(chat('book', 'Priya'))).toMatch(/you agree that .* may contact you/);
+  });
+});
+
 describe('approved topics', () => {
   it.each([
     ['What to pack for delivery?', /Our team suggests packing/],
