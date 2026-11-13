@@ -5,3 +5,6 @@ dist
 dist-embed
 .env.local
 .env.*.local
+
+# stray screenshots from local checks
+/*.png
