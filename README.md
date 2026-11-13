@@ -20,6 +20,8 @@ npm test           # assistant conversation tests + Google Sheets script tests
 | `/doctor`      | Dr. Deepak Shinde's profile                                                 |
 | `/appointment` | Appointment request form with confirmation                                  |
 | `/assistant`   | Scripted, hospital-approved enquiry assistant (chat)                        |
+| `/privacy`     | Privacy notice (DPDP Act 2023)                                              |
+| `/terms`       | Terms of use                                                                |
 | `/admin`       | Admin board: enquiries, statuses, WhatsApp drafts (passcode sign-in)        |
 
 ## Screenshots
@@ -78,6 +80,8 @@ To change an answer or add a topic, edit `ANSWERS`, `MENU` and the keyword patte
 to `src/data/assistant.test.ts` and run `npm test`.
 
 ## Before launch
+
+- Have a lawyer review `/privacy` and `/terms`, and confirm the details in `src/data/legal.ts` (Grievance Officer contact, how long enquiries are kept, response time). The pages describe what the site actually does today, so update them if that changes.
 
 - Hospital address and phone number are real. Doctor credentials, email, timings and testimonials are still **placeholder copy** (`src/data/hospital.ts`).
 - Photos are temporary Unsplash stock images (`src/assets/images/`, credits in `docs/IMAGE_CREDITS.md`). Replace them with the hospital's own photos, especially Dr. Shinde's portrait.
