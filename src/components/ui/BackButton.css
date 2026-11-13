@@ -21,3 +21,24 @@
 .back-btn--inverse:hover {
   background: rgba(251, 247, 240, 0.24);
 }
+
+/* Arrow plus visible text, all one button */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px 0 0;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  font: 600 15px var(--font-sans);
+  color: var(--muted);
+}
+
+.back-link:hover {
+  color: var(--teal-700);
+}
+
+.back-link:hover .back-btn {
+  background: var(--line);
+}

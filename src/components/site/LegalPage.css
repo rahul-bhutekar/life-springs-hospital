@@ -11,6 +11,16 @@
   }
 }
 
+.legal__back {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 900px) {
+  .legal__back {
+    margin-bottom: 28px;
+  }
+}
+
 .legal__title {
   margin-top: 12px;
   font-size: 36px;
