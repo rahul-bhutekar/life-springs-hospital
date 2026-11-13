@@ -500,10 +500,49 @@
   height: 260px;
 }
 
-.visit__address {
-  margin-top: 14px;
-  font: normal 400 15px/1.55 var(--font-sans);
+.visit__details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 16px;
+  margin: 20px 0 0;
+}
+
+.visit__item {
+  min-width: 0;
+}
+
+.visit__item--wide,
+.visit__item--phone {
+  grid-column: 1 / -1;
+}
+
+.visit__item dt {
+  font: 600 11px/1.3 var(--font-sans);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--clay);
+}
+
+.visit__item dd {
+  margin: 6px 0 0;
+  font: 400 15px/1.5 var(--font-sans);
   color: var(--ink-2);
+}
+
+.visit__item address {
+  font-style: normal;
+}
+
+.visit__line {
+  display: block;
+}
+
+.visit__nowrap {
+  white-space: nowrap;
+}
+
+.visit__item--phone .visit__phone {
+  font: 600 20px/1.3 var(--font-sans);
 }
 
 .visit__phone {
@@ -534,10 +573,23 @@ button.visit__phone {
     padding-bottom: 56px;
   }
 
-  .visit__address {
-    margin-top: 18px;
+  .visit__details {
+    gap: 24px 32px;
+    margin-top: 24px;
+  }
+
+  .visit__item dd {
     font-size: 17px;
-    line-height: 1.7;
+    line-height: 1.55;
+  }
+
+  /* Desktop: phone and email share a row */
+  .visit__item--phone {
+    grid-column: auto;
+  }
+
+  .visit__item--phone .visit__phone {
+    font-size: 17px;
   }
 
   .visit__ctas {

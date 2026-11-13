@@ -25,8 +25,9 @@ export const HOSPITAL = {
     'Near New Orbis School, Keshav Nagar, Mundhwa',
     'Pune, Maharashtra 411036',
   ],
-  opdHours: 'OPD: Mon–Sat, 10am–1pm · 5pm–8pm',
-  emergencyHours: 'Emergency & labour ward: 24 × 7',
+  opdDays: 'Mon–Sat',
+  opdTimes: '10am–1pm · 5pm–8pm',
+  emergencyHours: 'Open 24 × 7',
   /** Exact pin, from the hospital's Google Maps listing. */
   location: LOCATION,
   /** The hospital's own Google Maps share link (opens its listing). */
