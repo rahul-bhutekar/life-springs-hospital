@@ -1,84 +1,151 @@
-/** Sample data for the owner dashboard. Replace with the enquiries API. */
-export type EnquiryStatus = 'New' | 'Called' | 'Confirmed' | 'Follow up';
+/**
+ * Admin board helpers: sample data for demo mode, and the summaries the
+ * board builds from enquiries (real ones from the Google Sheet, or samples).
+ */
+import type { EnquiryStatus, StoredEnquiry, StoredQuestion } from '../lib/api';
+import { DOCTOR, HOSPITAL } from './hospital';
 
-export type Enquiry = {
-  id: string;
-  name: string;
-  time: string;
-  phone: string;
-  type: string;
-  date: string;
-  source: 'Assistant' | 'Website' | 'Phone';
-  status: EnquiryStatus;
+export const STATUSES: EnquiryStatus[] = ['New', 'Called', 'Confirmed', 'Follow up', 'Closed'];
+
+// ---------- Sample data (demo mode only) ----------
+
+const at = (now: Date, daysAgo: number, h: number, m: number) => {
+  const d = new Date(now);
+  d.setDate(d.getDate() - daysAgo);
+  d.setHours(h, m, 0, 0);
+  return d.toISOString();
 };
 
-export const ENQUIRIES: Enquiry[] = [
-  { id: 'e1', name: 'Priya Deshmukh', time: '8:12 am', phone: '+91 98220 41736', type: 'First consultation', date: 'Today, eve', source: 'Assistant', status: 'New' },
-  { id: 'e2', name: 'Aarti Kulkarni', time: '7:48 am', phone: '+91 97651 22094', type: 'Antenatal check-up', date: 'Today, morn', source: 'Website', status: 'New' },
-  { id: 'e3', name: 'Sneha Patil', time: 'Yesterday', phone: '+91 90110 58312', type: 'Delivery planning', date: 'Wed 11 Nov', source: 'Assistant', status: 'Called' },
-  { id: 'e4', name: 'Meera Joshi', time: 'Yesterday', phone: '+91 88050 77421', type: 'Postnatal care', date: 'Today, eve', source: 'Phone', status: 'Confirmed' },
-  { id: 'e5', name: 'Rutuja Pawar', time: 'Sat', phone: '+91 99223 10458', type: 'First consultation', date: 'Thu 12 Nov', source: 'Assistant', status: 'Follow up' },
-  { id: 'e6', name: 'Kavya Iyer', time: 'Sat', phone: '+91 70208 66105', type: 'High-risk review', date: 'Today, morn', source: 'Website', status: 'New' },
-];
+/** Made-up enquiries, timed relative to `now` so demo mode always looks current. */
+export function sampleEnquiries(now = new Date()): StoredEnquiry[] {
+  const rows: [string, number, number, number, string, string, string, string, string, EnquiryStatus][] = [
+    ['Priya Deshmukh', 0, 8, 12, '+919822041736', 'Today', 'evening', 'First pregnancy consultation', 'Assistant', 'New'],
+    ['Aarti Kulkarni', 0, 7, 48, '+919765122094', 'Today', 'morning', 'Routine antenatal check-up', 'Website', 'New'],
+    ['Sneha Patil', 1, 18, 5, '+919011058312', 'Wed 11 Nov', 'morning', 'Delivery planning', 'Assistant', 'Called'],
+    ['Meera Joshi', 1, 16, 40, '+918805077421', 'Today', 'evening', 'Postnatal / newborn care', 'Website', 'Confirmed'],
+    ['Rutuja Pawar', 3, 11, 20, '+919922310458', 'Thu 12 Nov', 'morning', 'First pregnancy consultation', 'Assistant', 'Follow up'],
+    ['Kavya Iyer', 3, 9, 55, '+917020866105', 'Today', 'morning', 'Routine antenatal check-up', 'Website', 'New'],
+  ];
+  return rows.map(([name, days, h, m, phone, date, slot, type, source, status], i) => ({
+    reference: `LS-DEMO-${String(rows.length - i).padStart(4, '0')}`,
+    received: at(now, days, h, m),
+    name,
+    phone,
+    date,
+    slot,
+    type,
+    source,
+    status,
+    notes: '',
+    updated: at(now, days, h, m),
+  }));
+}
 
-export type Kpi = { label: string; value: string; delta: string; tone: 'up' | 'warn' | 'neutral' };
+export function sampleQuestions(now = new Date()): StoredQuestion[] {
+  return [
+    { received: at(now, 1, 21, 40), question: 'Can my husband stay overnight in the NICU?', source: 'Assistant' },
+    { received: at(now, 1, 20, 15), question: 'Do you accept Star Health cashless?', source: 'Assistant' },
+    { received: at(now, 1, 18, 2), question: 'Is there parking for two-wheelers?', source: 'Assistant' },
+  ];
+}
 
-export const KPIS: Kpi[] = [
-  { label: 'New enquiries', value: '14', delta: '+5 vs yesterday', tone: 'up' },
-  { label: "Today's requests", value: '6', delta: '3 unconfirmed', tone: 'warn' },
-  { label: 'Pending follow-ups', value: '9', delta: '2 overdue', tone: 'warn' },
-  { label: 'Unanswered enquiries', value: '3', delta: 'from assistant', tone: 'neutral' },
-];
-
-export const DAILY_SUMMARY = {
-  generatedAt: '7:00 am',
-  long:
-    "14 new enquiries since yesterday — 6 want slots today, mostly first-trimester consultations. 3 questions about NICU visiting couldn't be answered by the assistant. Feedback is warm; one family mentioned a long wait at billing.",
-  short: '6 mothers want slots today. 3 NICU visiting questions need a reply. One billing-wait complaint.',
-};
-
-export type WhatsAppDraft = { id: string; name: string; phone: string; tag: string; text: string };
-
-export const WHATSAPP_DRAFTS: WhatsAppDraft[] = [
-  {
-    id: 'w1',
-    name: 'Priya Deshmukh',
-    phone: '+91 98220 41736',
-    tag: 'First consultation',
-    text: 'Namaste Priya ji, thank you for contacting Life Springs Maternity Hospital. Dr. Deepak Shinde can see you today between 5–8 pm. Please reply YES to confirm, or tell us a time that suits you.',
-  },
-  {
-    id: 'w2',
-    name: 'Rutuja Pawar',
-    phone: '+91 99223 10458',
-    tag: 'Follow-up',
-    text: 'Hello Rutuja ji, this is Life Springs Maternity Hospital. We tried calling about your consultation request for Thu 12 Nov. Shall we book the 11 am slot for you?',
-  },
-  {
-    id: 'w3',
-    name: 'Sneha Patil',
-    phone: '+91 90110 58312',
-    tag: 'Delivery planning',
-    text: 'Namaste Sneha ji, your delivery-planning visit is noted for Wed 11 Nov. Please bring your antenatal file and recent scan reports. See you soon!',
-  },
-];
-
-export const FOLLOWUPS = [
-  { name: 'Rutuja Pawar', detail: 'No answer twice · since Sat', priority: 'overdue' as const },
-  { name: 'Neha Gokhale', detail: 'Send scan-day reminder', priority: 'soon' as const },
-  { name: 'Shruti More', detail: '6-week postnatal review due', priority: 'routine' as const },
-];
-
-export const UNANSWERED = [
-  { q: 'Can my husband stay overnight in the NICU?', meta: 'Assistant · 9:40 pm' },
-  { q: 'Do you accept Star Health cashless?', meta: 'Assistant · 8:15 pm' },
-  { q: 'Is there parking for two-wheelers?', meta: 'Website · 6:02 pm' },
-];
-
-export const FEEDBACK = [
+/** Sample patient feedback. Shown in demo mode only: the website does not collect feedback yet. */
+export const SAMPLE_FEEDBACK = [
   { name: 'Meera J.', rating: 5, text: 'Felt cared for from admission to discharge.' },
   { name: 'Ankita R.', rating: 4, text: 'Lovely nurses, but billing took over an hour.' },
   { name: 'Swati D.', rating: 5, text: 'Dr. Shinde was patient with all our questions.' },
 ];
 
-export const maskPhone = (phone: string, mask: boolean) => (mask ? phone.slice(0, -3) + 'xxx' : phone);
+// ---------- Formatting ----------
+
+const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
+
+/** "8:12 am" today, "Yesterday", "Sat" this week, otherwise "9 Nov". */
+export function formatReceived(iso: string, now = new Date()): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  if (sameDay(d, now)) return d.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  if (sameDay(d, yesterday)) return 'Yesterday';
+  const days = (now.getTime() - d.getTime()) / 86_400_000;
+  if (days < 6) return d.toLocaleDateString('en-IN', { weekday: 'short' });
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+/** "Thu 12 Nov · evening", or just the date when no slot was chosen. */
+export const formatPreferred = (e: StoredEnquiry) => [e.date, e.slot].filter(Boolean).join(' · ');
+
+/** "+919822041736" → "+91 98220 41736". */
+export function formatPhone(phone: string): string {
+  const d = phone.replace(/\D/g, '');
+  if (d.length === 12 && d.startsWith('91')) return `+91 ${d.slice(2, 7)} ${d.slice(7)}`;
+  return phone;
+}
+
+export const maskPhone = (phone: string, mask: boolean) => {
+  const shown = formatPhone(phone);
+  return mask ? shown.slice(0, -3) + 'xxx' : shown;
+};
+
+export const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? name;
+
+// ---------- Summaries ----------
+
+export type Kpi = { label: string; value: number; note: string; tone: 'up' | 'warn' | 'neutral' };
+
+export function buildKpis(enquiries: StoredEnquiry[], questions: StoredQuestion[], now = new Date()): Kpi[] {
+  const received = (daysAgo: number) => {
+    const day = new Date(now);
+    day.setDate(now.getDate() - daysAgo);
+    return enquiries.filter((e) => sameDay(new Date(e.received), day)).length;
+  };
+  const weekAgo = now.getTime() - 7 * 86_400_000;
+  const count = (s: EnquiryStatus) => enquiries.filter((e) => e.status === s).length;
+  return [
+    { label: 'New enquiries', value: count('New'), note: 'waiting for a call', tone: 'warn' },
+    { label: 'Received today', value: received(0), note: `${received(1)} yesterday`, tone: 'up' },
+    { label: 'Pending follow-ups', value: count('Follow up'), note: 'to call again', tone: 'warn' },
+    {
+      label: 'Unanswered questions',
+      value: questions.filter((q) => new Date(q.received).getTime() >= weekAgo).length,
+      note: 'last 7 days',
+      tone: 'neutral',
+    },
+  ];
+}
+
+const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+
+/** A plain-language summary of where things stand, built from the numbers (no AI involved). */
+export function buildSummary(enquiries: StoredEnquiry[], questions: StoredQuestion[], now = new Date()): string {
+  const [fresh, today, followUps, unanswered] = buildKpis(enquiries, questions, now).map((k) => k.value);
+  if (!enquiries.length && !questions.length) return 'No enquiries yet. New requests from the website and the assistant will appear here.';
+  const parts = [
+    fresh
+      ? `${plural(fresh, 'new enquiry', 'new enquiries')} waiting for a call${today ? `, ${today} received today` : ''}.`
+      : 'Every enquiry has been called.',
+    followUps ? `${plural(followUps, 'follow-up')} to call again.` : '',
+    unanswered ? `${plural(unanswered, 'question')} the assistant couldn't answer this week.` : '',
+  ];
+  return parts.filter(Boolean).join(' ');
+}
+
+/** Enquiries that need a message: new ones first, then follow-ups. */
+export const needsMessage = (enquiries: StoredEnquiry[]) => [
+  ...enquiries.filter((e) => e.status === 'New'),
+  ...enquiries.filter((e) => e.status === 'Follow up'),
+];
+
+/** A ready-to-send WhatsApp message for an enquiry. */
+export function whatsappDraft(e: StoredEnquiry): string {
+  const who = `${firstName(e.name)} ji`;
+  const when = formatPreferred(e);
+  if (e.status === 'Follow up') {
+    return `Hello ${who}, this is ${HOSPITAL.name}. We tried calling about your ${e.type.toLowerCase()} request${when ? ` for ${when}` : ''}. Please reply with a time that suits you and we will book it.`;
+  }
+  return `Namaste ${who}, thank you for contacting ${HOSPITAL.name}. We have your ${e.type.toLowerCase()} request${when ? ` (${when})` : ''} for ${DOCTOR.name}. Please reply YES to confirm, or tell us a time that suits you.`;
+}
+
+/** WhatsApp link that opens a chat with the patient, with the message filled in. */
+export const whatsappLink = (e: StoredEnquiry) => `https://wa.me/${e.phone.replace(/\D/g, '')}?text=${encodeURIComponent(whatsappDraft(e))}`;

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HOSPITAL } from '../../data/hospital';
 import { Button } from '../ui/Button';
+import { CallLink } from '../ui/CallLink';
 import { Logo } from '../ui/Logo';
 import './SiteHeader.css';
 
@@ -38,9 +39,7 @@ export function SiteHeader() {
         </nav>
 
         <div className="site-header__actions">
-          <a className="site-header__call only-mobile" href={HOSPITAL.phoneHref}>
-            Call
-          </a>
+          <CallLink className="site-header__call only-mobile">Call</CallLink>
           <button
             type="button"
             className="site-header__menu only-mobile"
@@ -53,9 +52,7 @@ export function SiteHeader() {
             <span />
             <span />
           </button>
-          <a className="site-header__phone only-desktop" href={HOSPITAL.phoneHref}>
-            {HOSPITAL.phoneDisplay}
-          </a>
+          <CallLink className="site-header__phone only-desktop">{HOSPITAL.phoneDisplay}</CallLink>
           <Button to="/appointment" size="sm" className="only-desktop">
             Book appointment
           </Button>

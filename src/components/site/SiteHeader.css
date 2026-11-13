@@ -52,6 +52,11 @@
   }
 }
 
+button.site-header__call,
+button.site-header__phone {
+  background: transparent;
+}
+
 .site-header__call {
   height: 40px;
   padding: 0 14px;

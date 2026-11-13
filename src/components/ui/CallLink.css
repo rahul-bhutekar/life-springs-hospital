@@ -1,0 +1,60 @@
+/* The button version should look exactly like the link it replaces. */
+button.call-link {
+  font: inherit;
+  cursor: pointer;
+}
+
+.call-panel__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px))
+    max(16px, env(safe-area-inset-left, 0px));
+  background: rgba(14, 53, 56, 0.45);
+}
+
+@media (min-width: 600px) {
+  .call-panel__backdrop {
+    align-items: center;
+  }
+}
+
+.call-panel {
+  width: 100%;
+  max-width: 420px;
+  background: var(--ivory);
+  border-radius: var(--r-xl);
+  padding: 24px 22px 20px;
+  box-shadow: var(--shadow-float);
+  color: var(--ink);
+  text-align: left;
+}
+
+.call-panel__title {
+  font: 600 15px var(--font-sans);
+  color: var(--muted);
+}
+
+.call-panel__number {
+  margin-top: 6px;
+  font: 400 34px/1.1 var(--font-serif);
+  color: var(--teal-900);
+  font-variant-numeric: tabular-nums;
+  user-select: all;
+}
+
+.call-panel__hint {
+  margin-top: 10px;
+  font: 400 14px/1.5 var(--font-sans);
+  color: var(--ink-3);
+}
+
+.call-panel__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}

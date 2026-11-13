@@ -3,11 +3,12 @@ import { MobileActionBar } from '../components/site/MobileActionBar';
 import { SiteFooter } from '../components/site/SiteFooter';
 import { SiteHeader } from '../components/site/SiteHeader';
 import { Button } from '../components/ui/Button';
+import { CallLink } from '../components/ui/CallLink';
 import { Eyebrow } from '../components/ui/Eyebrow';
 import { MapEmbed } from '../components/ui/MapEmbed';
 import { PhotoSlot } from '../components/ui/PhotoSlot';
 import { IMAGES } from '../data/images';
-import { DOCTOR, FACILITIES, FEATURED_STORY, HOSPITAL, SERVICES, TESTIMONIALS } from '../data/hospital';
+import { DOCTOR, FACILITIES, HOSPITAL, SERVICES, TESTIMONIALS } from '../data/hospital';
 import './Home.css';
 
 export function Home() {
@@ -75,10 +76,6 @@ export function Home() {
               <span className="only-mobile-inline">Our care</span>
               <span className="only-desktop-inline">Care for every stage</span>
             </h2>
-            <Link to="/#services" className="section__link">
-              <span className="only-mobile-inline">All services</span>
-              <span className="only-desktop-inline">View all services →</span>
-            </Link>
           </div>
           <ul className="services">
             {SERVICES.map((s) => (
@@ -90,9 +87,6 @@ export function Home() {
                   <h3 className="service__title">{s.title}</h3>
                   <p className="service__desc">{s.desc}</p>
                 </div>
-                <span className="service__chev only-mobile" aria-hidden="true">
-                  ›
-                </span>
               </li>
             ))}
           </ul>
@@ -145,36 +139,22 @@ export function Home() {
         </section>
 
         {/* Stories */}
-        <section id="stories" className="section container">
-          <figure className="story-feature only-mobile">
-            <div className="story-feature__mark" aria-hidden="true">
-              “
-            </div>
-            <blockquote className="story-feature__quote">{FEATURED_STORY.quote}</blockquote>
-            <figcaption className="story-feature__by">
-              <PhotoSlot tone="blush" className="story-feature__avatar" label="" />
-              <span>
-                <strong>{FEATURED_STORY.name}</strong>
-                <span>{FEATURED_STORY.detail}</span>
-              </span>
-            </figcaption>
-          </figure>
-
-          <div className="only-desktop">
-            <h2 className="section__title">Families who trusted us</h2>
-            <ul className="stories">
-              {TESTIMONIALS.map((t) => (
-                <li key={t.name} className={`story story--${t.tone}`}>
-                  <div className="story__stars" role="img" aria-label="5 out of 5 stars">
-                    ★★★★★
-                  </div>
-                  <blockquote className="story__quote">{t.quote}</blockquote>
-                  <div className="story__name">{t.name}</div>
-                  <div className="story__detail">{t.detail}</div>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <section id="stories" className="section" aria-labelledby="stories-title">
+          <h2 id="stories-title" className="section__title container">
+            Families who trusted us
+          </h2>
+          <ul className="stories">
+            {TESTIMONIALS.map((t) => (
+              <li key={t.name} className={`story story--${t.tone}`}>
+                <div className="story__stars" role="img" aria-label="5 out of 5 stars">
+                  ★★★★★
+                </div>
+                <blockquote className="story__quote">{t.quote}</blockquote>
+                <div className="story__name">{t.name}</div>
+                <div className="story__detail">{t.detail}</div>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* Visit */}
@@ -196,16 +176,14 @@ export function Home() {
               <br />
               {HOSPITAL.emergencyHours}
               <br />
-              Phone: <a href={HOSPITAL.phoneHref}>{HOSPITAL.phoneDisplay}</a>
+              Phone: <CallLink className="visit__phone">{HOSPITAL.phoneDisplay}</CallLink>
               <span className="only-desktop-inline">
                 {' '}
                 · <a href={`mailto:${HOSPITAL.email}`}>{HOSPITAL.email}</a>
               </span>
             </address>
             <div className="visit__ctas only-mobile">
-              <Button href={HOSPITAL.phoneHref} variant="outline" block>
-                Call hospital
-              </Button>
+              <CallLink className="btn btn--outline btn--md btn--block">Call hospital</CallLink>
               <Button href={HOSPITAL.directionsHref} external variant="outline" block>
                 Directions
               </Button>

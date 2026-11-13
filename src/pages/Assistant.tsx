@@ -2,7 +2,8 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { BackButton } from '../components/ui/BackButton';
 import { LogoMark } from '../components/ui/Logo';
 import { HOSPITAL } from '../data/hospital';
-import { PLACEHOLDERS, QUICK_REPLIES, initialChat, respond, type ChatState } from '../data/assistant';
+import { PLACEHOLDERS, QUICK_REPLIES, addNote, initialChat, respond, type ChatState } from '../data/assistant';
+import { ApiError, logUnansweredQuestion, submitAssistantEnquiry } from '../lib/api';
 import './Assistant.css';
 
 export function Assistant() {
@@ -14,6 +15,25 @@ export function Assistant() {
     const el = logRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [chat.messages.length]);
+
+  // Carry out what the last reply asked for: send a finished booking, or record an unanswered question.
+  const handled = useRef(new Set<number>());
+  useEffect(() => {
+    const fx = chat.effect;
+    if (!fx || handled.current.has(fx.id)) return;
+    handled.current.add(fx.id);
+    if (fx.kind === 'question') {
+      void logUnansweredQuestion(fx.question);
+      return;
+    }
+    submitAssistantEnquiry(fx.lead).catch((err: unknown) => {
+      const text =
+        err instanceof ApiError && err.code === 'rate_limited'
+          ? err.message
+          : `Sorry, your request didn't reach our team. Please call us on ${HOSPITAL.phoneDisplay}, or try again in a few minutes.`;
+      setChat((c) => addNote(c, text));
+    });
+  }, [chat.effect]);
 
   const send = (text: string) => {
     if (!text.trim()) return;
