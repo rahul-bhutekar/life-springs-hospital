@@ -37,6 +37,12 @@ import './Dashboard.css';
 /** How many enquiries the phone list shows before "Show all". */
 const PHONE_LIST_SIZE = 10;
 
+/** Unanswered questions shown before "Show all". */
+const QUESTIONS_PREVIEW = 5;
+
+/** The most questions the Google script sends (MAX_QUESTIONS in apps-script/Code.gs). */
+const QUESTIONS_SENT_MAX = 50;
+
 const isPhoneWidth = () => window.matchMedia('(max-width: 899px)').matches;
 
 const KPI_TONE = { up: 'var(--success-text)', warn: 'var(--clay)', neutral: 'var(--muted)' };
@@ -107,6 +113,7 @@ function DashboardBoard({
   const [now, setNow] = useState(() => new Date());
   const [filter, setFilter] = useState<EnquiryFilter>('all');
   const [showAllRows, setShowAllRows] = useState(false);
+  const [showAllQuestions, setShowAllQuestions] = useState(false);
   const [query, setQuery] = useState('');
   const [mask, setMask] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
@@ -555,16 +562,34 @@ function DashboardBoard({
                 <h2 className="panel__title panel__title--sm">Unanswered questions</h2>
                 <p className="panel__hint">Questions the assistant had no approved answer for</p>
                 {questions.length ? (
-                  <ul className="unanswered">
-                    {questions.slice(0, 5).map((u) => (
-                      <li key={u.received + u.question}>
-                        <div>“{u.question}”</div>
-                        <div className="unanswered__meta">
-                          {u.source} · {formatReceived(u.received, now)}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
+                  <>
+                    <ul className="unanswered" id="unanswered-list">
+                      {(showAllQuestions ? questions : questions.slice(0, QUESTIONS_PREVIEW)).map((u) => (
+                        <li key={u.received + u.question}>
+                          <div>“{u.question}”</div>
+                          <div className="unanswered__meta">
+                            {u.source} · {formatReceived(u.received, now)}
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    {showAllQuestions && questions.length >= QUESTIONS_SENT_MAX && (
+                      <p className="panel__hint unanswered__limit">
+                        Showing the latest {QUESTIONS_SENT_MAX}. Older questions are in the Sheet's Questions tab.
+                      </p>
+                    )}
+                    {questions.length > QUESTIONS_PREVIEW && (
+                      <button
+                        type="button"
+                        className="panel__more"
+                        aria-expanded={showAllQuestions}
+                        aria-controls="unanswered-list"
+                        onClick={() => setShowAllQuestions((s) => !s)}
+                      >
+                        {showAllQuestions ? 'Show fewer' : `Show all ${questions.length}`}
+                      </button>
+                    )}
+                  </>
                 ) : (
                   <p className="panel__empty">None yet.</p>
                 )}

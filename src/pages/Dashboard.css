@@ -983,3 +983,19 @@ button.kpi.is-on .kpi__delta {
   color: var(--teal-700);
   font: 600 14px var(--font-sans);
 }
+
+/* "Show all" under a panel's list */
+.panel__more {
+  margin-top: 12px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font: 600 13.5px var(--font-sans);
+  color: var(--teal-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.unanswered__limit {
+  margin-top: 10px;
+}
