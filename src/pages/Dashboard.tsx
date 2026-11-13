@@ -8,6 +8,7 @@ import {
   STATUSES,
   buildKpis,
   buildSummary,
+  cleanPreferredDate,
   firstName,
   formatPhone,
   formatPreferred,
@@ -55,7 +56,7 @@ function greeting(d: Date) {
 function downloadCsv(rows: StoredEnquiry[]) {
   const header = ['Reference', 'Received', 'Patient', 'Phone', 'Enquiry', 'Preferred date', 'Slot', 'Source', 'Status'];
   const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
-  const csv = [header, ...rows.map((e) => [e.reference, e.received, e.name, e.phone, e.type, e.date, e.slot, e.source, e.status])]
+  const csv = [header, ...rows.map((e) => [e.reference, e.received, e.name, e.phone, e.type, cleanPreferredDate(e.date), e.slot, e.source, e.status])]
     .map((r) => r.map(esc).join(','))
     .join('\n');
   const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));

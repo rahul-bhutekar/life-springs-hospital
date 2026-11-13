@@ -86,9 +86,21 @@ function createEnquiry_(b) {
     var sheet = sheet_(SHEETS.enquiries);
     var now = new Date();
     var reference = 'LS-' + String(now.getFullYear()).slice(-2) + pad_(now.getMonth() + 1, 2) + '-' + pad_(sheet.getLastRow(), 4);
-    sheet.appendRow(
-      [reference, now, name, '+' + (digits.length === 10 ? '91' + digits : digits), text_(b.date, 40), text_(b.slot, 20), text_(b.type, 80), source, 'New', '', now].map(safe_),
-    );
+    // Visitor text is stored as plain text, so Sheets never turns "Sat 14 Nov" into a date
+    // or runs text starting with "=" as a formula.
+    sheet.appendRow([
+      reference,
+      now,
+      asText_(name),
+      asText_('+' + (digits.length === 10 ? '91' + digits : digits)),
+      asText_(text_(b.date, 40)),
+      asText_(text_(b.slot, 20)),
+      asText_(text_(b.type, 80)),
+      source,
+      'New',
+      '',
+      now,
+    ]);
     return { ok: true, reference: reference };
   } finally {
     lock.releaseLock();
@@ -103,7 +115,7 @@ function logQuestion_(b) {
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    sheet_(SHEETS.questions).appendRow([new Date(), question, source].map(safe_));
+    sheet_(SHEETS.questions).appendRow([new Date(), asText_(question), source]);
     return { ok: true };
   } finally {
     lock.releaseLock();
@@ -124,14 +136,14 @@ function listEnquiries_(b) {
       return {
         reference: String(r[0]),
         received: iso_(r[1]),
-        name: String(r[2]),
-        phone: String(r[3]),
-        date: String(r[4]),
-        slot: String(r[5]),
-        type: String(r[6]),
+        name: cellText_(r[2]),
+        phone: cellText_(r[3]),
+        date: cellText_(r[4]),
+        slot: cellText_(r[5]),
+        type: cellText_(r[6]),
         source: String(r[7]),
         status: STATUSES.indexOf(String(r[8])) >= 0 ? String(r[8]) : 'New',
-        notes: String(r[9]),
+        notes: cellText_(r[9]),
         updated: iso_(r[10]),
       };
     })
@@ -142,7 +154,7 @@ function listEnquiries_(b) {
   var qRows = q.getLastRow() > 1 ? q.getRange(2, 1, q.getLastRow() - 1, SHEETS.questions.headers.length).getValues() : [];
   var questions = qRows
     .filter(function (r) { return r[1]; })
-    .map(function (r) { return { received: iso_(r[0]), question: String(r[1]), source: String(r[2]) }; })
+    .map(function (r) { return { received: iso_(r[0]), question: cellText_(r[1]), source: String(r[2]) }; })
     .reverse()
     .slice(0, MAX_QUESTIONS);
 
@@ -215,10 +227,23 @@ function text_(value, max) {
   return String(value == null ? '' : value).replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
-/** Stops visitor text from running as a spreadsheet formula. */
-function safe_(value) {
-  if (typeof value === 'string' && /^[=+\-@\t\r]/.test(value)) return "'" + value;
-  return value;
+/**
+ * Marks visitor text as plain text with a leading apostrophe (Sheets hides it).
+ * Without it, Sheets turns date-like text such as "Sat 14 Nov" into a date and runs
+ * text starting with "=" as a formula.
+ */
+function asText_(value) {
+  var s = String(value == null ? '' : value);
+  return s ? "'" + s : s;
+}
+
+/**
+ * Reads a cell that should hold text. Rows saved before asText_ existed may hold a
+ * date Sheets made from "Sat 14 Nov": show those as "Sat 14 Nov" again.
+ */
+function cellText_(value) {
+  if (value instanceof Date) return Utilities.formatDate(value, Session.getScriptTimeZone(), 'EEE d MMM');
+  return String(value == null ? '' : value);
 }
 
 function sameText_(a, b) {

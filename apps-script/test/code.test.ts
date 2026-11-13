@@ -83,6 +83,29 @@ describe('createEnquiry', () => {
   });
 });
 
+describe('preferred dates', () => {
+  it('keeps a preferred date like "Sat 14 Nov" as text instead of letting Sheets turn it into a date', () => {
+    const { reference } = api.post(enquiry({ date: 'Sat 14 Nov', phone: '9000000010' }));
+    const row = api.sheet('Enquiries').rows.find((r: unknown[]) => r[0] === reference);
+    expect(row[4]).toBe('Sat 14 Nov');
+    const res = api.post({ action: 'listEnquiries', passcode: 'secret-123' });
+    expect(res.enquiries[0].date).toBe('Sat 14 Nov');
+  });
+
+  it('shows rows that Sheets already turned into dates as a short day, not a long date-time', () => {
+    api.post(enquiry());
+    api.sheet('Enquiries').rows[1][4] = new Date(2026, 10, 14); // what older rows look like
+    const res = api.post({ action: 'listEnquiries', passcode: 'secret-123' });
+    expect(res.enquiries[0].date).toBe('Sat 14 Nov');
+  });
+
+  it('keeps other visitor text as text too', () => {
+    api.post(enquiry({ name: '12 May', phone: '9000000011', type: '2026-01-01' }));
+    const res = api.post({ action: 'listEnquiries', passcode: 'secret-123' });
+    expect(res.enquiries[0]).toMatchObject({ name: '12 May', type: '2026-01-01' });
+  });
+});
+
 describe('logQuestion', () => {
   it('saves the question', () => {
     expect(api.post({ action: 'logQuestion', question: 'Do you have a cafeteria?', source: 'Assistant' })).toEqual({ ok: true });
