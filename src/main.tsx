@@ -8,9 +8,16 @@ import { App } from './App';
 /**
  * VITE_ROUTER=memory builds a copy that keeps routes in memory, for hosts that
  * don't allow path-based URLs (e.g. an embedded preview). A plain `#doctor`,
- * `#appointment`, `#assistant` or `#admin` in the URL opens that page.
+ * `#appointment`, `#assistant`, `#admin`, `#privacy` or `#terms` in the URL opens that page.
  */
-const ROUTES: Record<string, string> = { doctor: '/doctor', appointment: '/appointment', assistant: '/assistant', admin: '/admin' };
+const ROUTES: Record<string, string> = {
+  doctor: '/doctor',
+  appointment: '/appointment',
+  assistant: '/assistant',
+  admin: '/admin',
+  privacy: '/privacy',
+  terms: '/terms',
+};
 
 function Router({ children }: { children: React.ReactNode }) {
   if (import.meta.env.VITE_ROUTER === 'memory') {
