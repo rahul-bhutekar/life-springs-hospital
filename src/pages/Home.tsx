@@ -165,23 +165,51 @@ export function Home() {
               <span className="only-desktop-inline">Visit Life Springs Maternity Hospital</span>
             </h2>
             <MapEmbed className="visit__map only-mobile" />
-            <address className="visit__address">
-              {HOSPITAL.addressLines.map((line) => (
-                <span key={line}>
-                  {line}
-                  <br />
-                </span>
-              ))}
-              {HOSPITAL.opdHours}
-              <br />
-              {HOSPITAL.emergencyHours}
-              <br />
-              Phone: <CallLink className="visit__phone">{HOSPITAL.phoneDisplay}</CallLink>
-              <span className="only-desktop-inline">
-                {' '}
-                · <a href={`mailto:${HOSPITAL.email}`}>{HOSPITAL.email}</a>
-              </span>
-            </address>
+            <dl className="visit__details">
+              <div className="visit__item visit__item--wide">
+                <dt>Address</dt>
+                <dd>
+                  <address>
+                    {HOSPITAL.addressLines.map((line) => (
+                      <span key={line} className="visit__line">
+                        {line}
+                      </span>
+                    ))}
+                  </address>
+                </dd>
+              </div>
+              <div className="visit__item">
+                <dt>OPD hours</dt>
+                <dd>
+                  <span className="visit__line">{HOSPITAL.opdDays}</span>
+                  <span className="visit__line">
+                    {/* Keep each time range whole, e.g. never "5pm–" / "8pm" */}
+                    {HOSPITAL.opdTimes.split(' · ').map((range, i) => (
+                      <span key={range}>
+                        {i > 0 && ' · '}
+                        <span className="visit__nowrap">{range}</span>
+                      </span>
+                    ))}
+                  </span>
+                </dd>
+              </div>
+              <div className="visit__item">
+                <dt>Emergency &amp; labour ward</dt>
+                <dd>{HOSPITAL.emergencyHours}</dd>
+              </div>
+              <div className="visit__item visit__item--phone">
+                <dt>Phone</dt>
+                <dd>
+                  <CallLink className="visit__phone">{HOSPITAL.phoneDisplay}</CallLink>
+                </dd>
+              </div>
+              <div className="visit__item only-desktop">
+                <dt>Email</dt>
+                <dd>
+                  <a href={`mailto:${HOSPITAL.email}`}>{HOSPITAL.email}</a>
+                </dd>
+              </div>
+            </dl>
             <div className="visit__ctas only-mobile">
               <CallLink className="btn btn--outline btn--md btn--block">Call hospital</CallLink>
               <Button href={HOSPITAL.directionsHref} external variant="outline" block>

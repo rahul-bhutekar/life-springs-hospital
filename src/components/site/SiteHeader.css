@@ -7,6 +7,10 @@
   -webkit-backdrop-filter: blur(8px);
 }
 
+.site-header.is-menu-open {
+  background: var(--ivory);
+}
+
 .site-header__inner {
   max-width: var(--page-max);
   margin: 0 auto;
@@ -91,6 +95,7 @@ button.site-header__phone {
   justify-content: center;
   gap: 4px;
   padding: 0;
+  transition: background-color 0.2s;
 }
 
 .site-header__menu span {
@@ -98,6 +103,7 @@ button.site-header__phone {
   width: 16px;
   height: 1.5px;
   background: var(--teal-700);
+  transition: transform 0.2s, opacity 0.2s, width 0.2s, margin 0.2s, background-color 0.2s;
 }
 
 .site-header__menu span:last-child {
@@ -105,16 +111,86 @@ button.site-header__phone {
   margin-left: -6px;
 }
 
+/* Open: the button turns teal and the lines become an ✕ */
+.site-header__menu.is-open {
+  background: var(--teal-700);
+}
+
+.site-header__menu.is-open span {
+  background: var(--ivory);
+}
+
+.site-header__menu.is-open span:first-child {
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.site-header__menu.is-open span:nth-child(2) {
+  opacity: 0;
+}
+
+.site-header__menu.is-open span:last-child {
+  width: 16px;
+  margin-left: 0;
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+
+/* The open menu: a white panel over the page, with a shadow and rounded bottom */
 .site-header__drawer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  padding: 4px var(--gutter) 18px;
-  border-bottom: 1px solid var(--line);
+  padding: 6px var(--gutter) 18px;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  box-shadow: 0 24px 40px -16px rgba(14, 53, 56, 0.35);
 }
 
 .site-header__drawer a {
-  padding: 13px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 4px;
   font: 500 17px var(--font-sans);
   color: var(--ink);
+}
+
+.site-header__drawer a + a {
   border-top: 1px solid var(--line-soft);
 }
+
+.site-header__drawer a span {
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.site-header__drawer a:hover,
+.site-header__drawer a:focus-visible {
+  color: var(--teal-700);
+}
+
+.site-header__drawer .site-header__drawer-cta {
+  margin-top: 10px;
+  justify-content: center;
+  height: 50px;
+  border: 1.5px solid var(--teal-700);
+  border-radius: var(--r-pill);
+  color: var(--teal-700);
+  font-weight: 600;
+}
+
+.site-header__drawer a.site-header__drawer-cta {
+  border-top: 1.5px solid var(--teal-700);
+}
+
+.site-header__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  background: rgba(14, 53, 56, 0.4);
+}
+

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react';
 import { HOSPITAL } from '../../data/hospital';
 import { LEGAL } from '../../data/legal';
+import { BackButton } from '../ui/BackButton';
 import { SiteFooter } from './SiteFooter';
 import { SiteHeader } from './SiteHeader';
 import './LegalPage.css';
@@ -21,6 +22,7 @@ export function LegalPage({ title, intro, children }: Props) {
     <>
       <SiteHeader />
       <main className="legal container">
+        <BackButton className="legal__back" label="Back" showLabel />
         <div className="eyebrow">Last updated {LEGAL.lastUpdated}</div>
         <h1 className="legal__title">{title}</h1>
         <div className="legal__intro">{intro}</div>
