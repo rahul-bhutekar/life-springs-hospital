@@ -14,6 +14,7 @@
  * Admin actions (need the passcode set in Project Settings → Script properties → ADMIN_PASSCODE):
  *   listEnquiries  — latest enquiries and questions, for the admin board
  *   updateStatus   — change an enquiry's status
+ *   markQuestion   — mark an unanswered question as answered (or undo), so it leaves the admin board
  */
 
 var SHEETS = {
@@ -23,7 +24,8 @@ var SHEETS = {
   },
   questions: {
     name: 'Questions',
-    headers: ['Received', 'Question', 'Source'],
+    // "Handled" holds when a question was marked as answered; empty means still open.
+    headers: ['Received', 'Question', 'Source', 'Handled'],
   },
 };
 
@@ -53,6 +55,8 @@ function doPost(e) {
         return json_(listEnquiries_(body));
       case 'updateStatus':
         return json_(updateStatus_(body));
+      case 'markQuestion':
+        return json_(markQuestion_(body));
       default:
         return json_(fail_('bad_request', 'Unknown action.'));
     }
@@ -86,9 +90,21 @@ function createEnquiry_(b) {
     var sheet = sheet_(SHEETS.enquiries);
     var now = new Date();
     var reference = 'LS-' + String(now.getFullYear()).slice(-2) + pad_(now.getMonth() + 1, 2) + '-' + pad_(sheet.getLastRow(), 4);
-    sheet.appendRow(
-      [reference, now, name, '+' + (digits.length === 10 ? '91' + digits : digits), text_(b.date, 40), text_(b.slot, 20), text_(b.type, 80), source, 'New', '', now].map(safe_),
-    );
+    // Visitor text is stored as plain text, so Sheets never turns "Sat 14 Nov" into a date
+    // or runs text starting with "=" as a formula.
+    sheet.appendRow([
+      reference,
+      now,
+      asText_(name),
+      asText_('+' + (digits.length === 10 ? '91' + digits : digits)),
+      asText_(text_(b.date, 40)),
+      asText_(text_(b.slot, 20)),
+      asText_(text_(b.type, 80)),
+      source,
+      'New',
+      '',
+      now,
+    ]);
     return { ok: true, reference: reference };
   } finally {
     lock.releaseLock();
@@ -103,7 +119,7 @@ function logQuestion_(b) {
   var lock = LockService.getScriptLock();
   lock.waitLock(10000);
   try {
-    sheet_(SHEETS.questions).appendRow([new Date(), question, source].map(safe_));
+    sheet_(SHEETS.questions).appendRow([new Date(), asText_(question), source]);
     return { ok: true };
   } finally {
     lock.releaseLock();
@@ -124,14 +140,14 @@ function listEnquiries_(b) {
       return {
         reference: String(r[0]),
         received: iso_(r[1]),
-        name: String(r[2]),
-        phone: String(r[3]),
-        date: String(r[4]),
-        slot: String(r[5]),
-        type: String(r[6]),
+        name: cellText_(r[2]),
+        phone: cellText_(r[3]),
+        date: cellText_(r[4]),
+        slot: cellText_(r[5]),
+        type: cellText_(r[6]),
         source: String(r[7]),
         status: STATUSES.indexOf(String(r[8])) >= 0 ? String(r[8]) : 'New',
-        notes: String(r[9]),
+        notes: cellText_(r[9]),
         updated: iso_(r[10]),
       };
     })
@@ -141,8 +157,9 @@ function listEnquiries_(b) {
   var q = sheet_(SHEETS.questions);
   var qRows = q.getLastRow() > 1 ? q.getRange(2, 1, q.getLastRow() - 1, SHEETS.questions.headers.length).getValues() : [];
   var questions = qRows
-    .filter(function (r) { return r[1]; })
-    .map(function (r) { return { received: iso_(r[0]), question: String(r[1]), source: String(r[2]) }; })
+    .filter(function (r) { return r[1] && !r[3]; }) // open questions only
+
+    .map(function (r) { return { received: iso_(r[0]), question: cellText_(r[1]), source: String(r[2]) }; })
     .reverse()
     .slice(0, MAX_QUESTIONS);
 
@@ -174,6 +191,33 @@ function updateStatus_(b) {
   }
 }
 
+/**
+ * Marks a question as answered ({ answered: true }, the default) or reopens it ({ answered: false }).
+ * The question is found by when it was received and its text, as listEnquiries sent them.
+ */
+function markQuestion_(b) {
+  var denied = checkPasscode_(b.passcode);
+  if (denied) return denied;
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var sheet = sheet_(SHEETS.questions);
+    var last = sheet.getLastRow();
+    if (last < 2) return fail_('not_found', 'Question not found.');
+    var rows = sheet.getRange(2, 1, last - 1, 2).getValues();
+    for (var i = 0; i < rows.length; i++) {
+      if (iso_(rows[i][0]) === String(b.received) && cellText_(rows[i][1]) === String(b.question)) {
+        sheet.getRange(i + 2, 4).setValue(b.answered === false ? '' : new Date());
+        return { ok: true };
+      }
+    }
+    return fail_('not_found', 'Question not found. It may have been deleted from the Sheet.');
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 /** Returns an error reply when the passcode is wrong, or null when it is right. */
 function checkPasscode_(given) {
   var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSCODE');
@@ -197,6 +241,12 @@ function sheet_(def) {
     sheet = ss.insertSheet(def.name);
     sheet.getRange(1, 1, 1, def.headers.length).setValues([def.headers]).setFontWeight('bold');
     sheet.setFrozenRows(1);
+    return sheet;
+  }
+  // Sheets made by an older version of this script may lack newer columns (e.g. "Handled"): add their headers.
+  var current = sheet.getRange(1, 1, 1, def.headers.length).getValues()[0];
+  for (var i = 0; i < def.headers.length; i++) {
+    if (!current[i]) sheet.getRange(1, i + 1).setValue(def.headers[i]).setFontWeight('bold');
   }
   return sheet;
 }
@@ -215,10 +265,23 @@ function text_(value, max) {
   return String(value == null ? '' : value).replace(/\s+/g, ' ').trim().slice(0, max);
 }
 
-/** Stops visitor text from running as a spreadsheet formula. */
-function safe_(value) {
-  if (typeof value === 'string' && /^[=+\-@\t\r]/.test(value)) return "'" + value;
-  return value;
+/**
+ * Marks visitor text as plain text with a leading apostrophe (Sheets hides it).
+ * Without it, Sheets turns date-like text such as "Sat 14 Nov" into a date and runs
+ * text starting with "=" as a formula.
+ */
+function asText_(value) {
+  var s = String(value == null ? '' : value);
+  return s ? "'" + s : s;
+}
+
+/**
+ * Reads a cell that should hold text. Rows saved before asText_ existed may hold a
+ * date Sheets made from "Sat 14 Nov": show those as "Sat 14 Nov" again.
+ */
+function cellText_(value) {
+  if (value instanceof Date) return Utilities.formatDate(value, Session.getScriptTimeZone(), 'EEE d MMM');
+  return String(value == null ? '' : value);
 }
 
 function sameText_(a, b) {
