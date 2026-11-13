@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LogoMark } from '../components/ui/Logo';
-import { StatusBadge } from '../components/ui/StatusBadge';
 import { Stars } from '../components/ui/Stars';
 import {
+  FILTERS,
   SAMPLE_FEEDBACK,
   STATUSES,
   buildKpis,
@@ -13,9 +13,12 @@ import {
   formatPreferred,
   formatReceived,
   maskPhone,
+  matchesFilter,
   needsMessage,
   whatsappDraft,
   whatsappLink,
+  type EnquiryFilter,
+  type Kpi,
 } from '../data/dashboard';
 import { HOSPITAL } from '../data/hospital';
 import { useAdminSession } from '../lib/adminSession';
@@ -31,11 +34,10 @@ import {
 import { AdminSignIn } from './AdminSignIn';
 import './Dashboard.css';
 
-const TABS: { label: string; filter: EnquiryStatus | null }[] = [
-  { label: 'All', filter: null },
-  { label: 'New', filter: 'New' },
-  { label: 'Follow up', filter: 'Follow up' },
-];
+/** How many enquiries the phone list shows before "Show all". */
+const PHONE_LIST_SIZE = 10;
+
+const isPhoneWidth = () => window.matchMedia('(max-width: 899px)').matches;
 
 const KPI_TONE = { up: 'var(--success-text)', warn: 'var(--clay)', neutral: 'var(--muted)' };
 
@@ -103,7 +105,8 @@ function DashboardBoard({
   const [loading, setLoading] = useState(!initial);
   const [actionError, setActionError] = useState<string | null>(null);
   const [now, setNow] = useState(() => new Date());
-  const [tab, setTab] = useState(0);
+  const [filter, setFilter] = useState<EnquiryFilter>('all');
+  const [showAllRows, setShowAllRows] = useState(false);
   const [query, setQuery] = useState('');
   const [mask, setMask] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
@@ -146,13 +149,38 @@ function DashboardBoard({
   const newCount = kpis[0].value;
 
   const enquiries = useMemo(() => {
-    const f = TABS[tab].filter;
     const q = query.trim().toLowerCase();
     const qDigits = q.replace(/\D/g, '');
     return all
-      .filter((e) => !f || e.status === f)
+      .filter((e) => matchesFilter(e, filter, now))
       .filter((e) => !q || e.name.toLowerCase().includes(q) || (qDigits !== '' && e.phone.replace(/\D/g, '').includes(qDigits)));
-  }, [all, tab, query]);
+  }, [all, filter, query, now]);
+
+  const filterTitle = FILTERS.find((f) => f.key === filter)?.title ?? '';
+  const phoneRows = showAllRows ? enquiries : enquiries.slice(0, PHONE_LIST_SIZE);
+
+  /** Shows `next` (or everything, if it's already shown), then on phones scrolls to the list. */
+  function chooseFilter(next: EnquiryFilter, { toggle = false, scroll = false } = {}) {
+    setFilter((current) => (toggle && current === next ? 'all' : next));
+    setShowAllRows(false);
+    if (scroll && isPhoneWidth()) {
+      requestAnimationFrame(() => document.getElementById('enquiries')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    }
+  }
+
+  function onTile(k: Kpi) {
+    if (k.action === 'questions') {
+      document.getElementById('unanswered')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+    chooseFilter(k.action, { toggle: true, scroll: true });
+  }
+
+  const emptyText = !all.length
+    ? 'No enquiries yet. Requests from the website will appear here.'
+    : query.trim()
+      ? 'No enquiries match your search.'
+      : `No ${filterTitle.toLowerCase()} right now.`;
 
   async function changeStatus(e: StoredEnquiry, status: EnquiryStatus) {
     const before = e.status;
@@ -324,18 +352,28 @@ function DashboardBoard({
         ) : (
           <>
             {/* KPIs */}
-            <section className="kpis" aria-label="Key numbers">
-              {kpis.map((k) => (
-                <div key={k.label} className="kpi">
-                  <div className="kpi__label">{k.label}</div>
-                  <div className="kpi__row">
-                    <div className="kpi__value">{k.value}</div>
-                    <div className="kpi__delta" style={{ color: KPI_TONE[k.tone] }}>
-                      {k.note}
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <section className="kpis" aria-label="Key numbers. Tap one to filter the enquiries.">
+              {kpis.map((k) => {
+                const on = k.action === filter;
+                return (
+                  <button
+                    key={k.label}
+                    type="button"
+                    className={`kpi ${on ? 'is-on' : ''}`}
+                    onClick={() => onTile(k)}
+                    aria-pressed={k.action === 'questions' ? undefined : on}
+                    title={k.action === 'questions' ? 'Go to unanswered questions' : on ? 'Show all enquiries' : `Show only ${k.label.toLowerCase()}`}
+                  >
+                    <span className="kpi__label">{k.label}</span>
+                    <span className="kpi__row">
+                      <span className="kpi__value">{k.value}</span>
+                      <span className="kpi__delta" style={{ color: on ? undefined : KPI_TONE[k.tone] }}>
+                        {k.note}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
             </section>
 
             <div className="dash__grid">
@@ -344,16 +382,34 @@ function DashboardBoard({
                 <div className="enq__head">
                   <h2 id="enq-title" className="panel__title">
                     <span className="only-desktop-inline">Appointment enquiries</span>
-                    <span className="only-mobile-inline">Latest enquiries</span>
+                    <span className="only-mobile-inline">Enquiries</span>
                   </h2>
                   <div className="tabs only-desktop" role="tablist" aria-label="Filter enquiries">
-                    {TABS.map((t, i) => (
-                      <button key={t.label} type="button" role="tab" aria-selected={i === tab} className={i === tab ? 'is-on' : ''} onClick={() => setTab(i)}>
-                        {t.label}
+                    {FILTERS.map((f) => (
+                      <button
+                        key={f.key}
+                        type="button"
+                        role="tab"
+                        aria-selected={f.key === filter}
+                        className={f.key === filter ? 'is-on' : ''}
+                        onClick={() => chooseFilter(f.key)}
+                      >
+                        {f.tab}
                       </button>
                     ))}
                   </div>
                 </div>
+
+                {filter !== 'all' && (
+                  <p className="enq__showing" aria-live="polite">
+                    <span>
+                      Showing <strong>{filterTitle.toLowerCase()}</strong> · {enquiries.length}
+                    </span>
+                    <button type="button" onClick={() => chooseFilter('all')}>
+                      Clear filter
+                    </button>
+                  </p>
+                )}
 
                 <div className="enq__scroll only-desktop">
                   <table className="enq__table">
@@ -400,7 +456,7 @@ function DashboardBoard({
                       {enquiries.length === 0 && (
                         <tr>
                           <td colSpan={6} className="enq__empty">
-                            {all.length ? 'No enquiries match.' : 'No enquiries yet. Requests from the website will appear here.'}
+                            {emptyText}
                           </td>
                         </tr>
                       )}
@@ -409,19 +465,38 @@ function DashboardBoard({
                 </div>
 
                 <ul className="enq__cards only-mobile">
-                  {all.slice(0, 6).map((e) => (
+                  {phoneRows.map((e) => (
                     <li key={e.reference}>
-                      <div>
+                      <div className="enq__card-main">
                         <div className="enq__name">{e.name}</div>
                         <div className="enq__time">
                           {e.type} · {formatReceived(e.received, now)}
                         </div>
                       </div>
-                      <StatusBadge status={e.status} size={11.5} />
+                      <label className="sr-only" htmlFor={`m-status-${e.reference}`}>
+                        Status for {e.name}
+                      </label>
+                      <select
+                        id={`m-status-${e.reference}`}
+                        className={`enq__status enq__status--${e.status.replace(' ', '-').toLowerCase()}`}
+                        value={e.status}
+                        onChange={(ev) => void changeStatus(e, ev.target.value as EnquiryStatus)}
+                      >
+                        {STATUSES.map((st) => (
+                          <option key={st} value={st}>
+                            {st}
+                          </option>
+                        ))}
+                      </select>
                     </li>
                   ))}
-                  {all.length === 0 && <li className="enq__empty">No enquiries yet.</li>}
+                  {enquiries.length === 0 && <li className="enq__empty">{emptyText}</li>}
                 </ul>
+                {enquiries.length > phoneRows.length && (
+                  <button type="button" className="enq__more only-mobile" onClick={() => setShowAllRows(true)}>
+                    Show all {enquiries.length}
+                  </button>
+                )}
               </section>
 
               {/* Summary */}

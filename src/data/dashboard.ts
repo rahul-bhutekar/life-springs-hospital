@@ -92,7 +92,35 @@ export const firstName = (name: string) => name.trim().split(/\s+/)[0] ?? name;
 
 // ---------- Summaries ----------
 
-export type Kpi = { label: string; value: number; note: string; tone: 'up' | 'warn' | 'neutral' };
+// ---------- Filters (shared by the number tiles and the list tabs) ----------
+
+export type EnquiryFilter = 'all' | 'new' | 'today' | 'followup';
+
+export const FILTERS: { key: EnquiryFilter; tab: string; title: string }[] = [
+  { key: 'all', tab: 'All', title: 'All enquiries' },
+  { key: 'new', tab: 'New', title: 'New enquiries' },
+  { key: 'today', tab: 'Today', title: 'Received today' },
+  { key: 'followup', tab: 'Follow up', title: 'Pending follow-ups' },
+];
+
+/** Whether an enquiry belongs in a filter. The number tiles count with this same test. */
+export function matchesFilter(e: StoredEnquiry, filter: EnquiryFilter, now = new Date()): boolean {
+  switch (filter) {
+    case 'new':
+      return e.status === 'New';
+    case 'followup':
+      return e.status === 'Follow up';
+    case 'today':
+      return sameDay(new Date(e.received), now);
+    default:
+      return true;
+  }
+}
+
+/** What tapping a number tile does: filter the enquiries, or (for questions) jump to the questions panel. */
+export type KpiAction = EnquiryFilter | 'questions';
+
+export type Kpi = { action: KpiAction; label: string; value: number; note: string; tone: 'up' | 'warn' | 'neutral' };
 
 export function buildKpis(enquiries: StoredEnquiry[], questions: StoredQuestion[], now = new Date()): Kpi[] {
   const received = (daysAgo: number) => {
@@ -101,12 +129,13 @@ export function buildKpis(enquiries: StoredEnquiry[], questions: StoredQuestion[
     return enquiries.filter((e) => sameDay(new Date(e.received), day)).length;
   };
   const weekAgo = now.getTime() - 7 * 86_400_000;
-  const count = (s: EnquiryStatus) => enquiries.filter((e) => e.status === s).length;
+  const count = (f: EnquiryFilter) => enquiries.filter((e) => matchesFilter(e, f, now)).length;
   return [
-    { label: 'New enquiries', value: count('New'), note: 'waiting for a call', tone: 'warn' },
-    { label: 'Received today', value: received(0), note: `${received(1)} yesterday`, tone: 'up' },
-    { label: 'Pending follow-ups', value: count('Follow up'), note: 'to call again', tone: 'warn' },
+    { action: 'new', label: 'New enquiries', value: count('new'), note: 'waiting for a call', tone: 'warn' },
+    { action: 'today', label: 'Received today', value: count('today'), note: `${received(1)} yesterday`, tone: 'up' },
+    { action: 'followup', label: 'Pending follow-ups', value: count('followup'), note: 'to call again', tone: 'warn' },
     {
+      action: 'questions',
       label: 'Unanswered questions',
       value: questions.filter((q) => new Date(q.received).getTime() >= weekAgo).length,
       note: 'last 7 days',

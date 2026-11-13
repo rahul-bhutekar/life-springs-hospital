@@ -894,3 +894,92 @@ a.wa__sent {
 a.followups__call {
   text-decoration: none;
 }
+
+/* ---------- Number tiles are buttons that filter the list ---------- */
+button.kpi {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+
+button.kpi:hover {
+  border-color: var(--teal-700);
+  box-shadow: 0 8px 18px -14px rgba(14, 53, 56, 0.6);
+}
+
+.kpi__label,
+.kpi__value,
+.kpi__row {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .kpi__row {
+    display: flex;
+  }
+}
+
+/* Selected tile: solid teal, so it's obvious which filter is on */
+button.kpi.is-on {
+  background: var(--teal-700);
+  border-color: var(--teal-700);
+}
+
+button.kpi.is-on .kpi__value,
+button.kpi.is-on .kpi__label,
+button.kpi.is-on .kpi__delta {
+  color: var(--ivory);
+}
+
+.enq__showing {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 10px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: var(--teal-50);
+  color: var(--teal-900);
+  font: 400 14px var(--font-sans);
+}
+
+@media (min-width: 900px) {
+  .enq__showing {
+    margin: 0 20px 14px;
+  }
+}
+
+.enq__showing button {
+  flex: none;
+  border: 0;
+  background: none;
+  padding: 4px 0;
+  font: 600 14px var(--font-sans);
+  color: var(--teal-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.enq__card-main {
+  min-width: 0;
+}
+
+.enq__cards .enq__status {
+  flex: none;
+}
+
+.enq__more {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  height: 46px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid var(--teal-700);
+  background: transparent;
+  color: var(--teal-700);
+  font: 600 14px var(--font-sans);
+}
