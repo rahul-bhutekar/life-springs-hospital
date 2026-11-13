@@ -49,6 +49,11 @@ src/
 apps-script/            the Google Sheets backend (Code.gs) and its tests
 ```
 
+## Publishing
+
+The site is set up for Vercel (`vercel.json`). Steps: **[docs/DEPLOY_VERCEL.md](docs/DEPLOY_VERCEL.md)**.
+Set `VITE_SHEETS_URL` in Vercel's project settings, not in GitHub.
+
 ## Saving enquiries (Google Sheets)
 
 Appointment requests, assistant bookings and unanswered assistant questions are saved to a Google Sheet
