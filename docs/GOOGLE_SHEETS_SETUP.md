@@ -15,6 +15,9 @@ admin board shows sample data.
 You don't need to add any columns. The script creates the **Enquiries** and **Questions** tabs the first
 time a request arrives.
 
+In the **Questions** tab, the **Handled** column records when someone pressed **Mark as answered** on the
+admin board. Questions with a date there no longer appear on the board; clear the cell to bring one back.
+
 ## 2. Add the script
 
 1. In the Sheet, open **Extensions → Apps Script**.
@@ -65,6 +68,10 @@ Then try it:
 
 After editing `Code.gs`, use **Deploy → Manage deployments → ✏️ Edit → Version: New version → Deploy**.
 This keeps the same URL, so the website doesn't need changing.
+
+If the admin board says "This needs the latest Google script", the Sheet is still running an older
+`Code.gs`: paste in the current one from this repository and redeploy as above. Sheets made by an older
+version get any new columns (such as **Handled**) added automatically.
 
 ## What's protected, and the limits
 

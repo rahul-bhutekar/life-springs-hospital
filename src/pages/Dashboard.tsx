@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LogoMark } from '../components/ui/Logo';
 import { Stars } from '../components/ui/Stars';
@@ -27,10 +27,12 @@ import {
   ApiError,
   fetchAdminData,
   isBackendConnected,
+  markQuestionAnswered,
   updateEnquiryStatus,
   type AdminData,
   type EnquiryStatus,
   type StoredEnquiry,
+  type StoredQuestion,
 } from '../lib/api';
 import { AdminSignIn } from './AdminSignIn';
 import './Dashboard.css';
@@ -115,6 +117,9 @@ function DashboardBoard({
   const [filter, setFilter] = useState<EnquiryFilter>('all');
   const [showAllRows, setShowAllRows] = useState(false);
   const [showAllQuestions, setShowAllQuestions] = useState(false);
+  /** The question just marked as answered, for "Undo". */
+  const [answered, setAnswered] = useState<StoredQuestion | null>(null);
+  const undoTimer = useRef<number | undefined>(undefined);
   const [query, setQuery] = useState('');
   const [mask, setMask] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
@@ -205,6 +210,40 @@ function DashboardBoard({
       }
     }
   }
+
+  const setQuestions = (update: (qs: StoredQuestion[]) => StoredQuestion[]) =>
+    setData((d) => d && { ...d, questions: update(d.questions) });
+
+  async function markAnswered(q: StoredQuestion) {
+    setActionError(null);
+    setQuestions((qs) => qs.filter((x) => x !== q));
+    setAnswered(q);
+    window.clearTimeout(undoTimer.current);
+    undoTimer.current = window.setTimeout(() => setAnswered((a) => (a === q ? null : a)), 8000);
+    try {
+      await markQuestionAnswered(passcode, q, true);
+    } catch (err) {
+      setAnswered(null);
+      setQuestions((qs) => [...qs, q].sort((a, b) => b.received.localeCompare(a.received)));
+      if (!handleAuthError(err)) setActionError(err instanceof ApiError ? err.message : "Couldn't mark the question as answered.");
+    }
+  }
+
+  async function undoAnswered() {
+    const q = answered;
+    if (!q) return;
+    window.clearTimeout(undoTimer.current);
+    setAnswered(null);
+    setQuestions((qs) => [...qs, q].sort((a, b) => b.received.localeCompare(a.received)));
+    try {
+      await markQuestionAnswered(passcode, q, false);
+    } catch (err) {
+      setQuestions((qs) => qs.filter((x) => x !== q));
+      if (!handleAuthError(err)) setActionError(err instanceof ApiError ? err.message : "Couldn't undo. Please try again.");
+    }
+  }
+
+  useEffect(() => () => window.clearTimeout(undoTimer.current), []);
 
   const copy = (e: StoredEnquiry) => {
     navigator.clipboard?.writeText(whatsappDraft(e)).catch(() => {});
@@ -562,14 +601,32 @@ function DashboardBoard({
               <section className="panel panel--pad" id="unanswered">
                 <h2 className="panel__title panel__title--sm">Unanswered questions</h2>
                 <p className="panel__hint">Questions the assistant had no approved answer for</p>
+                {answered && (
+                  <p className="unanswered__undo" role="status">
+                    <span>Marked as answered.</span>
+                    <button type="button" onClick={() => void undoAnswered()}>
+                      Undo
+                    </button>
+                  </p>
+                )}
                 {questions.length ? (
                   <>
                     <ul className="unanswered" id="unanswered-list">
                       {(showAllQuestions ? questions : questions.slice(0, QUESTIONS_PREVIEW)).map((u) => (
                         <li key={u.received + u.question}>
                           <div>“{u.question}”</div>
-                          <div className="unanswered__meta">
-                            {u.source} · {formatReceived(u.received, now)}
+                          <div className="unanswered__foot">
+                            <span className="unanswered__meta">
+                              {u.source} · {formatReceived(u.received, now)}
+                            </span>
+                            <button
+                              type="button"
+                              className="unanswered__done"
+                              onClick={() => void markAnswered(u)}
+                              aria-label={`Mark “${u.question}” as answered`}
+                            >
+                              Mark as answered
+                            </button>
                           </div>
                         </li>
                       ))}

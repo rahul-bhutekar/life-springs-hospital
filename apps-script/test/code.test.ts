@@ -163,6 +163,50 @@ describe('admin actions', () => {
   });
 });
 
+describe('markQuestion', () => {
+  const list = () => api.post({ action: 'listEnquiries', passcode: 'secret-123' });
+  const ask = (question: string) => api.post({ action: 'logQuestion', question });
+  const mark = (q: { received: string; question: string }, answered?: boolean) =>
+    api.post({ action: 'markQuestion', passcode: 'secret-123', received: q.received, question: q.question, answered });
+
+  it('hides a question marked as answered, and keeps the row in the Sheet', () => {
+    ask('Parking?');
+    ask('Cafeteria?');
+    const [cafeteria] = list().questions;
+    expect(mark(cafeteria)).toEqual({ ok: true });
+    expect(list().questions.map((q: { question: string }) => q.question)).toEqual(['Parking?']);
+    const row = api.sheet('Questions').rows.find((r: unknown[]) => r[1] === 'Cafeteria?');
+    expect(row[3]).toBeInstanceOf(Date);
+  });
+
+  it('undo brings the question back', () => {
+    ask('Parking?');
+    const [q] = list().questions;
+    mark(q);
+    expect(list().questions).toHaveLength(0);
+    expect(mark(q, false)).toEqual({ ok: true });
+    expect(list().questions.map((x: { question: string }) => x.question)).toEqual(['Parking?']);
+  });
+
+  it('needs the passcode, and reports a question that no longer exists', () => {
+    ask('Parking?');
+    const [q] = list().questions;
+    expect(api.post({ action: 'markQuestion', passcode: 'bad', received: q.received, question: q.question }).error).toBe('unauthorized');
+    expect(mark({ received: q.received, question: 'Something else' }).error).toBe('not_found');
+  });
+
+  it('adds the Handled column to a Questions tab made by the older script', () => {
+    ask('Parking?');
+    const sheet = api.sheet('Questions');
+    sheet.rows[0] = ['Received', 'Question', 'Source']; // what older Sheets have
+    sheet.rows[1].length = 3;
+    const [q] = list().questions;
+    expect(mark(q)).toEqual({ ok: true });
+    expect(sheet.rows[0]).toEqual(['Received', 'Question', 'Source', 'Handled']);
+    expect(list().questions).toHaveLength(0);
+  });
+});
+
 describe('requests', () => {
   it('rejects bad JSON and unknown actions', () => {
     expect(api.post('not json').error).toBe('bad_request');

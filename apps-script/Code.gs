@@ -14,6 +14,7 @@
  * Admin actions (need the passcode set in Project Settings → Script properties → ADMIN_PASSCODE):
  *   listEnquiries  — latest enquiries and questions, for the admin board
  *   updateStatus   — change an enquiry's status
+ *   markQuestion   — mark an unanswered question as answered (or undo), so it leaves the admin board
  */
 
 var SHEETS = {
@@ -23,7 +24,8 @@ var SHEETS = {
   },
   questions: {
     name: 'Questions',
-    headers: ['Received', 'Question', 'Source'],
+    // "Handled" holds when a question was marked as answered; empty means still open.
+    headers: ['Received', 'Question', 'Source', 'Handled'],
   },
 };
 
@@ -53,6 +55,8 @@ function doPost(e) {
         return json_(listEnquiries_(body));
       case 'updateStatus':
         return json_(updateStatus_(body));
+      case 'markQuestion':
+        return json_(markQuestion_(body));
       default:
         return json_(fail_('bad_request', 'Unknown action.'));
     }
@@ -153,7 +157,8 @@ function listEnquiries_(b) {
   var q = sheet_(SHEETS.questions);
   var qRows = q.getLastRow() > 1 ? q.getRange(2, 1, q.getLastRow() - 1, SHEETS.questions.headers.length).getValues() : [];
   var questions = qRows
-    .filter(function (r) { return r[1]; })
+    .filter(function (r) { return r[1] && !r[3]; }) // open questions only
+
     .map(function (r) { return { received: iso_(r[0]), question: cellText_(r[1]), source: String(r[2]) }; })
     .reverse()
     .slice(0, MAX_QUESTIONS);
@@ -186,6 +191,33 @@ function updateStatus_(b) {
   }
 }
 
+/**
+ * Marks a question as answered ({ answered: true }, the default) or reopens it ({ answered: false }).
+ * The question is found by when it was received and its text, as listEnquiries sent them.
+ */
+function markQuestion_(b) {
+  var denied = checkPasscode_(b.passcode);
+  if (denied) return denied;
+
+  var lock = LockService.getScriptLock();
+  lock.waitLock(10000);
+  try {
+    var sheet = sheet_(SHEETS.questions);
+    var last = sheet.getLastRow();
+    if (last < 2) return fail_('not_found', 'Question not found.');
+    var rows = sheet.getRange(2, 1, last - 1, 2).getValues();
+    for (var i = 0; i < rows.length; i++) {
+      if (iso_(rows[i][0]) === String(b.received) && cellText_(rows[i][1]) === String(b.question)) {
+        sheet.getRange(i + 2, 4).setValue(b.answered === false ? '' : new Date());
+        return { ok: true };
+      }
+    }
+    return fail_('not_found', 'Question not found. It may have been deleted from the Sheet.');
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 /** Returns an error reply when the passcode is wrong, or null when it is right. */
 function checkPasscode_(given) {
   var expected = PropertiesService.getScriptProperties().getProperty('ADMIN_PASSCODE');
@@ -209,6 +241,12 @@ function sheet_(def) {
     sheet = ss.insertSheet(def.name);
     sheet.getRange(1, 1, 1, def.headers.length).setValues([def.headers]).setFontWeight('bold');
     sheet.setFrozenRows(1);
+    return sheet;
+  }
+  // Sheets made by an older version of this script may lack newer columns (e.g. "Handled"): add their headers.
+  var current = sheet.getRange(1, 1, 1, def.headers.length).getValues()[0];
+  for (var i = 0; i < def.headers.length; i++) {
+    if (!current[i]) sheet.getRange(1, i + 1).setValue(def.headers[i]).setFontWeight('bold');
   }
   return sheet;
 }

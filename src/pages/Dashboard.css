@@ -999,3 +999,53 @@ button.kpi.is-on .kpi__delta {
 .unanswered__limit {
   margin-top: 10px;
 }
+
+/* Unanswered questions: "Mark as answered" and "Undo" */
+.unanswered__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.unanswered__foot .unanswered__meta {
+  margin-top: 0;
+}
+
+.unanswered__done {
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-btn);
+  background: #fff;
+  color: var(--teal-700);
+  font: 600 12.5px var(--font-sans);
+}
+
+.unanswered__done:hover {
+  border-color: var(--teal-700);
+}
+
+.unanswered__undo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: var(--teal-700);
+  color: var(--ivory);
+  font: 500 13.5px var(--font-sans);
+}
+
+.unanswered__undo button {
+  border: 0;
+  background: none;
+  padding: 2px 0;
+  color: var(--ivory);
+  font: 700 13.5px var(--font-sans);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
