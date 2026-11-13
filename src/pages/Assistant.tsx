@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { BackButton } from '../components/ui/BackButton';
 import { LogoMark } from '../components/ui/Logo';
 import { HOSPITAL } from '../data/hospital';
@@ -133,7 +134,7 @@ export function Assistant() {
           </form>
           <p className="assistant__disclaimer">
             Not medical advice. In an emergency, call the labour ward 24 × 7
-            <span className="only-desktop-inline"> on {HOSPITAL.phoneDisplay}</span>.
+            <span className="only-desktop-inline"> on {HOSPITAL.phoneDisplay}</span>. <Link to="/privacy">Privacy</Link>
           </p>
         </div>
       </div>

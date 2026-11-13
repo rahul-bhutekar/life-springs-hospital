@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { HOSPITAL } from '../../data/hospital';
 import './SiteFooter.css';
 
@@ -9,7 +10,7 @@ export function SiteFooter() {
           © {HOSPITAL.year} {HOSPITAL.name}, Pune
         </span>
         <span>
-          <a href="#privacy">Privacy</a> · <a href="#terms">Terms</a> ·{' '}
+          <Link to="/privacy">Privacy</Link> · <Link to="/terms">Terms</Link> ·{' '}
           <span className="only-desktop-inline">Information on this site is not a substitute for medical advice.</span>
           <span className="only-mobile-inline">For medical emergencies, call the hospital directly.</span>
         </span>

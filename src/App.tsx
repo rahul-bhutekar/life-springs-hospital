@@ -5,6 +5,8 @@ import { Assistant } from './pages/Assistant';
 import { Dashboard } from './pages/Dashboard';
 import { Doctor } from './pages/Doctor';
 import { Home } from './pages/Home';
+import { Privacy } from './pages/Privacy';
+import { Terms } from './pages/Terms';
 
 /** Scrolls to `#section` links (e.g. /#services) and to the top on page changes. */
 function ScrollManager() {
@@ -33,6 +35,8 @@ export function App() {
         <Route path="/appointment" element={<Appointment />} />
         <Route path="/assistant" element={<Assistant />} />
         <Route path="/admin" element={<Dashboard />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="*" element={<Home />} />
       </Routes>
     </>

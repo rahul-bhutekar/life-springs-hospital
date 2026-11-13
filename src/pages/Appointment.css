@@ -394,3 +394,8 @@ legend.appt__label {
   color: var(--clay-900);
   font: 500 14px/1.5 var(--font-sans);
 }
+
+.appt__consent a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

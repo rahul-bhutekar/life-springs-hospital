@@ -1,4 +1,5 @@
 import { useMemo, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { SiteHeader } from '../components/site/SiteHeader';
 import { BackButton } from '../components/ui/BackButton';
 import { Button } from '../components/ui/Button';
@@ -212,7 +213,14 @@ export function Appointment() {
               <span className={`appt__check ${consent ? 'is-on' : ''}`} aria-hidden="true">
                 {consent ? '✓' : ''}
               </span>
-              I agree to be contacted by Life Springs Maternity Hospital on call or WhatsApp about this enquiry.
+              <span>
+                I agree to be contacted by {HOSPITAL.name} on call or WhatsApp about this enquiry. See our{' '}
+                {/* New tab keeps the half-filled form; the in-memory preview build can't open routes in a new tab. */}
+                <Link to="/privacy" target={import.meta.env.VITE_ROUTER === 'memory' ? undefined : '_blank'}>
+                  Privacy notice
+                </Link>
+                .
+              </span>
             </label>
             {errors.consent && <p className="appt__error">{errors.consent}</p>}
 
