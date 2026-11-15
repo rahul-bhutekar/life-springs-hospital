@@ -1,16 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LogoMark } from '../components/ui/Logo';
-import { Stars } from '../components/ui/Stars';
 import {
   FILTERS,
-  SAMPLE_FEEDBACK,
   STATUSES,
   buildKpis,
-  buildSummary,
   cleanPreferredDate,
   firstName,
-  formatPhone,
   formatPreferred,
   formatReceived,
   maskPhone,
@@ -156,10 +152,7 @@ function DashboardBoard({
   const all = useMemo(() => data?.enquiries ?? [], [data]);
   const questions = useMemo(() => data?.questions ?? [], [data]);
   const kpis = useMemo(() => buildKpis(all, questions, now), [all, questions, now]);
-  const summary = useMemo(() => buildSummary(all, questions, now), [all, questions, now]);
   const drafts = useMemo(() => needsMessage(all).slice(0, 3), [all]);
-  const followUps = useMemo(() => all.filter((e) => e.status === 'Follow up'), [all]);
-  const newCount = kpis[0].value;
 
   const enquiries = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -254,15 +247,6 @@ function DashboardBoard({
   const dateLong = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   const dateShort = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
   const mobileDrafts = showAllDrafts ? drafts : drafts.slice(0, 1);
-  const updatedAt = now.toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true }).toLowerCase();
-
-  const nav = [
-    { label: 'Overview', href: '#overview' },
-    { label: 'Enquiries', href: '#enquiries', count: newCount },
-    { label: 'Follow-ups', href: '#followups' },
-    { label: 'Feedback', href: '#feedback' },
-    { label: 'Assistant questions', href: '#unanswered' },
-  ];
 
   const draftCard = (e: StoredEnquiry, compact = false) => (
     <div key={e.reference} className={`wa ${compact ? 'wa--compact' : ''}`}>
@@ -299,14 +283,6 @@ function DashboardBoard({
             <div className="dash__brand-sub">Admin</div>
           </div>
         </div>
-        <nav aria-label="Dashboard">
-          {nav.map((n, i) => (
-            <a key={n.label} href={n.href} className={`dash__nav ${i === 0 ? 'is-active' : ''}`} aria-current={i === 0 ? 'page' : undefined}>
-              {n.label}
-              {n.count ? <span className="dash__count">{n.count}</span> : null}
-            </a>
-          ))}
-        </nav>
         <Link to="/" className="dash__site">
           ← View website
         </Link>
@@ -431,20 +407,6 @@ function DashboardBoard({
                     <span className="only-desktop-inline">Appointment enquiries</span>
                     <span className="only-mobile-inline">Enquiries</span>
                   </h2>
-                  <div className="tabs only-desktop" role="tablist" aria-label="Filter enquiries">
-                    {FILTERS.map((f) => (
-                      <button
-                        key={f.key}
-                        type="button"
-                        role="tab"
-                        aria-selected={f.key === filter}
-                        className={f.key === filter ? 'is-on' : ''}
-                        onClick={() => chooseFilter(f.key)}
-                      >
-                        {f.tab}
-                      </button>
-                    ))}
-                  </div>
                 </div>
 
                 {filter !== 'all' && (
@@ -546,131 +508,88 @@ function DashboardBoard({
                 )}
               </section>
 
-              {/* Summary */}
-              <section className="summary" aria-labelledby="summary-title">
-                <div className="summary__head">
-                  <h2 id="summary-title" className="summary__eyebrow">
-                    Today's summary
-                  </h2>
-                  <div className="summary__time only-desktop">Updated {updatedAt}</div>
-                </div>
-                <p className="summary__text">{summary}</p>
-                {drafts.length > 0 && (
-                  <>
-                    <h3 className="summary__sub only-desktop">Ready-to-send WhatsApp messages</h3>
-                    <div className="summary__drafts only-desktop">{drafts.map((e) => draftCard(e))}</div>
-                    <div className="summary__drafts only-mobile">
-                      {mobileDrafts.map((e) => draftCard(e, true))}
-                      {drafts.length > 1 && (
-                        <button type="button" className="summary__more" onClick={() => setShowAllDrafts((s) => !s)} aria-expanded={showAllDrafts}>
-                          {showAllDrafts ? 'Show fewer' : `+${drafts.length - 1} more messages`}
+              <div className="dash__aside">
+                {/* WhatsApp messages for new enquiries and follow-ups */}
+                  <section className="summary" aria-labelledby="summary-title">
+                  <div className="summary__head">
+                    <h2 id="summary-title" className="summary__eyebrow">
+                      Messages to send
+                    </h2>
+                  </div>
+                  {drafts.length === 0 && (
+                    <p className="summary__text">
+                      Nothing to send. New enquiries and follow-ups get a ready-made WhatsApp message here.
+                    </p>
+                  )}
+                  {drafts.length > 0 && (
+                    <>
+                      <div className="summary__drafts only-desktop">{drafts.map((e) => draftCard(e))}</div>
+                      <div className="summary__drafts only-mobile">
+                        {mobileDrafts.map((e) => draftCard(e, true))}
+                        {drafts.length > 1 && (
+                          <button type="button" className="summary__more" onClick={() => setShowAllDrafts((s) => !s)} aria-expanded={showAllDrafts}>
+                            {showAllDrafts ? 'Show fewer' : `+${drafts.length - 1} more messages`}
+                          </button>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </section>
+                <section className="panel panel--pad" id="unanswered">
+                  <h2 className="panel__title panel__title--sm">Unanswered questions</h2>
+                  <p className="panel__hint">Questions the assistant had no approved answer for</p>
+                  {answered && (
+                    <p className="unanswered__undo" role="status">
+                      <span>Marked as answered.</span>
+                      <button type="button" onClick={() => void undoAnswered()}>
+                        Undo
+                      </button>
+                    </p>
+                  )}
+                  {questions.length ? (
+                    <>
+                      <ul className="unanswered" id="unanswered-list">
+                        {(showAllQuestions ? questions : questions.slice(0, QUESTIONS_PREVIEW)).map((u) => (
+                          <li key={u.received + u.question}>
+                            <div>“{u.question}”</div>
+                            <div className="unanswered__foot">
+                              <span className="unanswered__meta">
+                                {u.source} · {formatReceived(u.received, now)}
+                              </span>
+                              <button
+                                type="button"
+                                className="unanswered__done"
+                                onClick={() => void markAnswered(u)}
+                                aria-label={`Mark “${u.question}” as answered`}
+                              >
+                                Mark as answered
+                              </button>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                      {showAllQuestions && questions.length >= QUESTIONS_SENT_MAX && (
+                        <p className="panel__hint unanswered__limit">
+                          Showing the latest {QUESTIONS_SENT_MAX}. Older questions are in the Sheet's Questions tab.
+                        </p>
+                      )}
+                      {questions.length > QUESTIONS_PREVIEW && (
+                        <button
+                          type="button"
+                          className="panel__more"
+                          aria-expanded={showAllQuestions}
+                          aria-controls="unanswered-list"
+                          onClick={() => setShowAllQuestions((s) => !s)}
+                        >
+                          {showAllQuestions ? 'Show fewer' : `Show all ${questions.length}`}
                         </button>
                       )}
-                    </div>
-                  </>
-                )}
-              </section>
-            </div>
-
-            {/* Lower row */}
-            <div className="dash__lower">
-              <section className="panel panel--pad" id="followups">
-                <h2 className="panel__title panel__title--sm">Pending follow-ups</h2>
-                {followUps.length ? (
-                  <ul className="followups">
-                    {followUps.map((f) => (
-                      <li key={f.reference}>
-                        <span className="followups__dot" aria-hidden="true" />
-                        <div className="followups__body">
-                          <div className="followups__name">{f.name}</div>
-                          <div className="followups__detail">
-                            {f.type} · {formatReceived(f.received, now)}
-                          </div>
-                        </div>
-                        <a className="followups__call" href={`tel:${f.phone.replace(/[^\d+]/g, '')}`} aria-label={`Call ${f.name} on ${formatPhone(f.phone)}`}>
-                          Call
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="panel__empty">No follow-ups. Set an enquiry's status to "Follow up" to list it here.</p>
-                )}
-              </section>
-
-              <section className="panel panel--pad" id="unanswered">
-                <h2 className="panel__title panel__title--sm">Unanswered questions</h2>
-                <p className="panel__hint">Questions the assistant had no approved answer for</p>
-                {answered && (
-                  <p className="unanswered__undo" role="status">
-                    <span>Marked as answered.</span>
-                    <button type="button" onClick={() => void undoAnswered()}>
-                      Undo
-                    </button>
-                  </p>
-                )}
-                {questions.length ? (
-                  <>
-                    <ul className="unanswered" id="unanswered-list">
-                      {(showAllQuestions ? questions : questions.slice(0, QUESTIONS_PREVIEW)).map((u) => (
-                        <li key={u.received + u.question}>
-                          <div>“{u.question}”</div>
-                          <div className="unanswered__foot">
-                            <span className="unanswered__meta">
-                              {u.source} · {formatReceived(u.received, now)}
-                            </span>
-                            <button
-                              type="button"
-                              className="unanswered__done"
-                              onClick={() => void markAnswered(u)}
-                              aria-label={`Mark “${u.question}” as answered`}
-                            >
-                              Mark as answered
-                            </button>
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                    {showAllQuestions && questions.length >= QUESTIONS_SENT_MAX && (
-                      <p className="panel__hint unanswered__limit">
-                        Showing the latest {QUESTIONS_SENT_MAX}. Older questions are in the Sheet's Questions tab.
-                      </p>
-                    )}
-                    {questions.length > QUESTIONS_PREVIEW && (
-                      <button
-                        type="button"
-                        className="panel__more"
-                        aria-expanded={showAllQuestions}
-                        aria-controls="unanswered-list"
-                        onClick={() => setShowAllQuestions((s) => !s)}
-                      >
-                        {showAllQuestions ? 'Show fewer' : `Show all ${questions.length}`}
-                      </button>
-                    )}
-                  </>
-                ) : (
-                  <p className="panel__empty">None yet.</p>
-                )}
-              </section>
-
-              <section className="panel panel--pad panel--blush" id="feedback">
-                <h2 className="panel__title panel__title--sm">Recent feedback</h2>
-                {isBackendConnected ? (
-                  <p className="panel__empty">The website doesn't collect patient feedback yet.</p>
-                ) : (
-                  <ul className="feedback">
-                    {SAMPLE_FEEDBACK.map((f) => (
-                      <li key={f.name}>
-                        <div className="feedback__head">
-                          <span>{f.name}</span>
-                          <Stars rating={f.rating} className="feedback__stars" />
-                        </div>
-                        <p className="feedback__text">{f.text}</p>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
+                    </>
+                  ) : (
+                    <p className="panel__empty">None yet.</p>
+                  )}
+                </section>
+              </div>
             </div>
           </>
         )}

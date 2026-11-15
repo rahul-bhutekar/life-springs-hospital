@@ -49,13 +49,6 @@ export function sampleQuestions(now = new Date()): StoredQuestion[] {
   ];
 }
 
-/** Sample patient feedback. Shown in demo mode only: the website does not collect feedback yet. */
-export const SAMPLE_FEEDBACK = [
-  { name: 'Meera J.', rating: 5, text: 'Felt cared for from admission to discharge.' },
-  { name: 'Ankita R.', rating: 4, text: 'Lovely nurses, but billing took over an hour.' },
-  { name: 'Swati D.', rating: 5, text: 'Dr. Shinde was patient with all our questions.' },
-];
-
 // ---------- Formatting ----------
 
 const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString();
@@ -152,22 +145,6 @@ export function buildKpis(enquiries: StoredEnquiry[], questions: StoredQuestion[
       tone: 'neutral',
     },
   ];
-}
-
-const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
-
-/** A plain-language summary of where things stand, built from the numbers (no AI involved). */
-export function buildSummary(enquiries: StoredEnquiry[], questions: StoredQuestion[], now = new Date()): string {
-  const [fresh, today, followUps, unanswered] = buildKpis(enquiries, questions, now).map((k) => k.value);
-  if (!enquiries.length && !questions.length) return 'No enquiries yet. New requests from the website and the assistant will appear here.';
-  const parts = [
-    fresh
-      ? `${plural(fresh, 'new enquiry', 'new enquiries')} waiting for a call${today ? `, ${today} received today` : ''}.`
-      : 'Every enquiry has been called.',
-    followUps ? `${plural(followUps, 'follow-up')} to call again.` : '',
-    unanswered ? `${plural(unanswered, 'question')} the assistant couldn't answer this week.` : '',
-  ];
-  return parts.filter(Boolean).join(' ');
 }
 
 /** Enquiries that need a message: new ones first, then follow-ups. */

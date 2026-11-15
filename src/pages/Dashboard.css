@@ -23,12 +23,6 @@
   gap: 4px;
 }
 
-.dash__side nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
 .dash__brand {
   display: flex;
   align-items: center;
@@ -46,35 +40,6 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #8fb1ae;
-}
-
-.dash__nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 11px 12px;
-  border-radius: 12px;
-  font: 500 14px var(--font-sans);
-  color: #dce8e6;
-}
-
-.dash__nav:hover {
-  color: var(--ivory);
-  background: rgba(251, 247, 240, 0.05);
-}
-
-.dash__nav.is-active {
-  background: rgba(251, 247, 240, 0.1);
-  color: var(--ivory);
-  font-weight: 600;
-}
-
-.dash__count {
-  background: var(--blush-300);
-  color: var(--clay-900);
-  border-radius: var(--r-pill);
-  padding: 1px 8px;
-  font-size: 12px;
 }
 
 .dash__site {
@@ -300,11 +265,25 @@
 }
 
 /* ---------- Grids ---------- */
+/* Phones: enquiries, then messages, then questions. Desktop: enquiries left, the rest right. */
 .dash__grid {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   gap: 14px;
   margin-top: 14px;
+}
+
+.dash__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .dash__aside {
+    gap: 16px;
+  }
 }
 
 @media (min-width: 900px) {
@@ -314,20 +293,6 @@
     gap: 16px;
     margin-top: 16px;
     align-items: start;
-  }
-}
-
-.dash__lower {
-  display: grid;
-  gap: 14px;
-  margin-top: 14px;
-}
-
-@media (min-width: 900px) {
-  .dash__lower {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    margin-top: 16px;
   }
 }
 
@@ -343,11 +308,6 @@
   padding: 20px;
 }
 
-.panel--blush {
-  background: var(--blush-100);
-  border-color: transparent;
-}
-
 .panel__title {
   font-size: 20px;
   color: var(--teal-900);
@@ -360,10 +320,6 @@
   .panel__title--sm {
     font-size: 20px;
   }
-}
-
-.panel--blush .panel__title {
-  color: var(--clay-ink);
 }
 
 .panel__hint {
@@ -403,54 +359,12 @@
   }
 }
 
-.tabs {
-  display: flex;
-  gap: 4px;
-  background: #f4eee4;
-  border-radius: var(--r-pill);
-  padding: 4px;
-}
-
-.tabs button {
-  padding: 7px 14px;
-  border: 0;
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--muted);
-  font: 600 13px var(--font-sans);
-}
-
-.tabs button.is-on {
-  background: #fff;
-  color: var(--teal-700);
-}
-
 .enq__table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
   font: 400 14px/1.35 var(--font-sans);
 }
 
-
-.enq__table th:nth-child(1) {
-  width: 22%;
-}
-.enq__table th:nth-child(2) {
-  width: 18%;
-}
-.enq__table th:nth-child(3) {
-  width: 19%;
-}
-.enq__table th:nth-child(4) {
-  width: 14%;
-}
-.enq__table th:nth-child(5) {
-  width: 12%;
-}
-.enq__table th:nth-child(6) {
-  width: 15%;
-}
 
 .enq__table th {
   text-align: left;
@@ -565,11 +479,6 @@
   color: var(--blush-300);
 }
 
-.summary__time {
-  font: 500 12px var(--font-sans);
-  color: #a9c7c4;
-}
-
 .summary__text {
   margin-top: 10px;
   font: 400 16px/1.5 var(--font-serif);
@@ -581,12 +490,6 @@
     margin-top: 12px;
     font-size: 18px;
   }
-}
-
-.summary__sub {
-  margin-top: 20px;
-  font: 600 13px var(--font-sans);
-  color: var(--ivory);
 }
 
 .summary__drafts {
@@ -687,54 +590,12 @@
 }
 
 /* ---------- Lower row ---------- */
-.followups,
-.unanswered,
-.feedback {
+.unanswered {
   list-style: none;
   padding: 0;
-  margin: 14px 0 0;
+  margin: 12px 0 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-.followups li {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.followups__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex: none;
-}
-
-.followups__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.followups__name {
-  font: 600 14px var(--font-sans);
-}
-
-.followups__detail {
-  font: 400 12.5px var(--font-sans);
-  color: var(--muted-2);
-}
-
-.followups__call {
-  border: 0;
-  background: none;
-  padding: 4px;
-  font: 600 12px var(--font-sans);
-  color: var(--teal-700);
-}
-
-.unanswered {
-  margin-top: 12px;
   gap: 10px;
 }
 
@@ -749,27 +610,6 @@
   margin-top: 4px;
   font: 500 12px var(--font-sans);
   color: var(--muted-2);
-}
-
-.feedback {
-  gap: 14px;
-}
-
-.feedback__head {
-  display: flex;
-  justify-content: space-between;
-  font: 600 13.5px var(--font-sans);
-}
-
-.feedback__stars {
-  color: var(--clay);
-  letter-spacing: 0.06em;
-}
-
-.feedback__text {
-  margin-top: 3px;
-  font: italic 400 15px/1.45 var(--font-serif);
-  color: var(--clay-ink);
 }
 
 /* ---------- Live data: states, status picker, session ---------- */
@@ -842,7 +682,7 @@ button.dash__site-mobile {
 }
 
 .enq__status {
-  max-width: 100%;
+  white-space: nowrap;
   padding: 5px 24px 5px 10px;
   border-radius: var(--r-pill);
   border: 1px solid transparent;
@@ -885,14 +725,6 @@ a.wa__sent {
   justify-content: center;
   height: 44px;
   font-size: 14px;
-}
-
-.followups__dot {
-  background: #d9a441;
-}
-
-a.followups__call {
-  text-decoration: none;
 }
 
 /* ---------- Number tiles are buttons that filter the list ---------- */
