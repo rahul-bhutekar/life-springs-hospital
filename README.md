@@ -86,3 +86,9 @@ to `src/data/assistant.test.ts` and run `npm test`.
 - Hospital address and phone number are real. Doctor credentials, email, timings and testimonials are still **placeholder copy** (`src/data/hospital.ts`).
 - Photos are temporary Unsplash stock images (`src/assets/images/`, credits in `docs/IMAGE_CREDITS.md`). Replace them with the hospital's own photos, especially Dr. Shinde's portrait.
 - Connect the Google Sheet (docs/GOOGLE_SHEETS_SETUP.md) and set `VITE_SHEETS_URL` on your hosting service; otherwise requests are not saved.
+
+## To do
+
+- [ ] **Collect patient feedback.** The website doesn't ask patients for feedback yet, so the admin board has
+      no feedback panel. Adding it needs a short feedback form (rating and comment, with consent), a
+      `logFeedback` action and a Feedback tab in `apps-script/Code.gs`, and a panel on the admin board.
