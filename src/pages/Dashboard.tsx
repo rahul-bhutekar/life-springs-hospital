@@ -44,6 +44,25 @@ const QUESTIONS_SENT_MAX = 50;
 
 const isPhoneWidth = () => window.matchMedia('(max-width: 899px)').matches;
 
+/** Remembers, in this browser only, whether "Messages to send" is collapsed. */
+const MESSAGES_COLLAPSED_KEY = 'ls-admin-messages-collapsed';
+
+function readMessagesCollapsed(): boolean {
+  try {
+    return localStorage.getItem(MESSAGES_COLLAPSED_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
+function saveMessagesCollapsed(collapsed: boolean) {
+  try {
+    localStorage.setItem(MESSAGES_COLLAPSED_KEY, collapsed ? '1' : '0');
+  } catch {
+    // Storage blocked: the choice lasts until the page reloads.
+  }
+}
+
 const KPI_TONE = { up: 'var(--success-text)', warn: 'var(--clay)', neutral: 'var(--muted)' };
 
 function greeting(d: Date) {
@@ -120,6 +139,12 @@ function DashboardBoard({
   const [mask, setMask] = useState(true);
   const [copied, setCopied] = useState<string | null>(null);
   const [showAllDrafts, setShowAllDrafts] = useState(false);
+  const [messagesCollapsed, setMessagesCollapsed] = useState(readMessagesCollapsed);
+  const toggleMessages = () =>
+    setMessagesCollapsed((c) => {
+      saveMessagesCollapsed(!c);
+      return !c;
+    });
 
   const handleAuthError = useCallback(
     (err: unknown) => {
@@ -510,12 +535,23 @@ function DashboardBoard({
 
               <div className="dash__aside">
                 {/* WhatsApp messages for new enquiries and follow-ups */}
-                  <section className="summary" aria-labelledby="summary-title">
-                  <div className="summary__head">
-                    <h2 id="summary-title" className="summary__eyebrow">
-                      Messages to send
-                    </h2>
-                  </div>
+                  <section className={`summary ${messagesCollapsed ? 'is-collapsed' : ''}`} aria-labelledby="summary-title">
+                  <h2 id="summary-title" className="summary__head">
+                    <button
+                      type="button"
+                      className="summary__toggle"
+                      aria-expanded={!messagesCollapsed}
+                      aria-controls="messages-body"
+                      onClick={toggleMessages}
+                    >
+                      <span className="summary__eyebrow">
+                        Messages to send{drafts.length > 0 && <span className="summary__count"> · {drafts.length}</span>}
+                      </span>
+                      <span className="summary__chevron" aria-hidden="true" />
+                      <span className="sr-only">{messagesCollapsed ? 'Show messages' : 'Hide messages'}</span>
+                    </button>
+                  </h2>
+                  <div id="messages-body" hidden={messagesCollapsed}>
                   {drafts.length === 0 && (
                     <p className="summary__text">
                       Nothing to send. New enquiries and follow-ups get a ready-made WhatsApp message here.
@@ -534,6 +570,7 @@ function DashboardBoard({
                       </div>
                     </>
                   )}
+                  </div>
                 </section>
                 <section className="panel panel--pad" id="unanswered">
                   <h2 className="panel__title panel__title--sm">Unanswered questions</h2>
