@@ -467,9 +467,46 @@
 }
 
 .summary__head {
+  margin: 0;
+  font: inherit;
+}
+
+/* The whole heading row collapses or expands the panel */
+.summary__toggle {
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.summary__toggle:hover .summary__chevron {
+  background-color: rgba(251, 247, 240, 0.22);
+}
+
+.summary__count {
+  color: var(--ivory);
+}
+
+/* Chevron in a small circle: points up when open, down when collapsed */
+.summary__chevron {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(251, 247, 240, 0.12) no-repeat center / 12px 8px
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 7l5-5 5 5' fill='none' stroke='%23FBF7F0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.summary.is-collapsed .summary__chevron {
+  transform: rotate(180deg);
 }
 
 .summary__eyebrow {
