@@ -130,6 +130,25 @@ export async function updateEnquiryStatus(passcode: string, reference: string, s
   await call({ action: 'updateStatus', passcode, reference, status });
 }
 
+/**
+ * Marks an unanswered question as answered (it leaves the board), or reopens it with answered = false.
+ * Needs the Google script from November 2026 or later; older versions reply "Unknown action".
+ */
+export async function markQuestionAnswered(passcode: string, q: StoredQuestion, answered = true): Promise<void> {
+  if (!isBackendConnected) return;
+  try {
+    await call({ action: 'markQuestion', passcode, received: q.received, question: q.question, answered });
+  } catch (err) {
+    if (err instanceof ApiError && err.code === 'bad_request') {
+      throw new ApiError(
+        'script_outdated',
+        'This needs the latest Google script. Update Code.gs in your Sheet and redeploy it (see docs/GOOGLE_SHEETS_SETUP.md).',
+      );
+    }
+    throw err;
+  }
+}
+
 function demoReference() {
   const d = new Date();
   return `LS-${String(d.getFullYear()).slice(-2)}${String(d.getMonth() + 1).padStart(2, '0')}-${Math.floor(Math.random() * 9000) + 1000}`;

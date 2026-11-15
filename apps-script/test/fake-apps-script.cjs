@@ -8,6 +8,25 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+/**
+ * What Google Sheets does with a value written by appendRow:
+ * - a leading apostrophe means "keep as text"; it is stored and returned without the apostrophe;
+ * - text that looks like a date (e.g. "Sat 14 Nov", "14 Nov", "2026-11-14") is turned into a Date.
+ */
+function asSheetsStores(v) {
+  if (typeof v !== 'string') return v;
+  if (v.startsWith("'")) return v.slice(1);
+  const dayMonth = /^(?:(?:mon|tue|wed|thu|fri|sat|sun)[a-z]*,?\s+)?(\d{1,2})\s+([a-z]{3})[a-z]*$/i.exec(v.trim());
+  if (dayMonth && MONTHS.includes(dayMonth[2].toLowerCase())) {
+    return new Date(new Date().getFullYear(), MONTHS.indexOf(dayMonth[2].toLowerCase()), Number(dayMonth[1]));
+  }
+  const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v.trim());
+  if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+  return v;
+}
+
 function createFakeBackend({ passcode = 'test-passcode' } = {}) {
   const sheets = new Map();
 
@@ -18,8 +37,7 @@ function createFakeBackend({ passcode = 'test-passcode' } = {}) {
       rows,
       getLastRow: () => rows.length,
       appendRow: (values) => {
-        // Sheets stores a leading apostrophe as "show as text" and does not return it.
-        rows.push(values.map((v) => (typeof v === 'string' && v.startsWith("'") ? v.slice(1) : v)));
+        rows.push(values.map(asSheetsStores));
       },
       setFrozenRows: () => sheet,
       getRange: (row, col, numRows = 1, numCols = 1) => {
@@ -71,6 +89,16 @@ function createFakeBackend({ passcode = 'test-passcode' } = {}) {
       getScriptProperties: () => ({ getProperty: (k) => (k === 'ADMIN_PASSCODE' ? passcode : null) }),
     },
     LockService: { getScriptLock: () => ({ waitLock: () => {}, releaseLock: () => {} }) },
+    Session: { getScriptTimeZone: () => 'Asia/Kolkata' },
+    Utilities: {
+      // Supports the one pattern Code.gs uses: 'EEE d MMM' → "Sat 14 Nov".
+      formatDate: (d, tz, pattern) => {
+        if (pattern !== 'EEE d MMM') throw new Error('fake formatDate: unsupported pattern ' + pattern);
+        return new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'short', day: 'numeric', month: 'short' })
+          .format(d)
+          .replace(',', '');
+      },
+    },
     ContentService: {
       MimeType: { JSON: 'application/json' },
       createTextOutput: (text) => ({ text, setMimeType() { return this; }, getContent() { return this.text; } }),

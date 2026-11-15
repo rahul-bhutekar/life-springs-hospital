@@ -73,8 +73,18 @@ export function formatReceived(iso: string, now = new Date()): string {
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 }
 
+/**
+ * Older versions of the Google script could send a preferred date that Sheets had
+ * turned into a date, as "Sat Nov 14 2026 00:00:00 GMT+0530 (India Standard Time)".
+ * Show that as "Sat 14 Nov" again; leave any other text unchanged.
+ */
+export function cleanPreferredDate(date: string): string {
+  const m = /^([A-Z][a-z]{2}) ([A-Z][a-z]{2}) (\d{1,2}) \d{4} \d{2}:\d{2}:\d{2} GMT/.exec(date.trim());
+  return m ? `${m[1]} ${Number(m[3])} ${m[2]}` : date;
+}
+
 /** "Thu 12 Nov · evening", or just the date when no slot was chosen. */
-export const formatPreferred = (e: StoredEnquiry) => [e.date, e.slot].filter(Boolean).join(' · ');
+export const formatPreferred = (e: StoredEnquiry) => [cleanPreferredDate(e.date), e.slot].filter(Boolean).join(' · ');
 
 /** "+919822041736" → "+91 98220 41736". */
 export function formatPhone(phone: string): string {
