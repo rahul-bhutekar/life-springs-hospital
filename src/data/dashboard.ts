@@ -131,7 +131,6 @@ export function buildKpis(enquiries: StoredEnquiry[], questions: StoredQuestion[
     day.setDate(now.getDate() - daysAgo);
     return enquiries.filter((e) => sameDay(new Date(e.received), day)).length;
   };
-  const weekAgo = now.getTime() - 7 * 86_400_000;
   const count = (f: EnquiryFilter) => enquiries.filter((e) => matchesFilter(e, f, now)).length;
   return [
     { action: 'new', label: 'New enquiries', value: count('new'), note: 'waiting for a call', tone: 'warn' },
@@ -140,8 +139,9 @@ export function buildKpis(enquiries: StoredEnquiry[], questions: StoredQuestion[
     {
       action: 'questions',
       label: 'Unanswered questions',
-      value: questions.filter((q) => new Date(q.received).getTime() >= weekAgo).length,
-      note: 'last 7 days',
+      // Same questions the Unanswered questions panel lists (all still open), so the numbers always match.
+      value: questions.length,
+      note: 'tap to view',
       tone: 'neutral',
     },
   ];
