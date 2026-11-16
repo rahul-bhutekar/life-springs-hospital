@@ -918,3 +918,28 @@ button.kpi.is-on .kpi__delta {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* Tapping the "Unanswered questions" tile outlines the panel briefly */
+#unanswered.is-flash {
+  animation: panel-flash 1.6s ease-out;
+}
+
+@keyframes panel-flash {
+  0%,
+  45% {
+    box-shadow: 0 0 0 3px var(--teal-700), 0 12px 28px -16px rgba(14, 53, 56, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(22, 75, 79, 0);
+  }
+}
+
+#unanswered-title:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #unanswered.is-flash {
+    animation: none;
+  }
+}

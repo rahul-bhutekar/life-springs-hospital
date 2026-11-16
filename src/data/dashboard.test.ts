@@ -14,6 +14,11 @@ describe('number tiles and filters', () => {
     }
   });
 
+  it('the questions tile counts every open question the panel lists', () => {
+    const many = [...questions, { received: '2026-01-02T10:00:00.000Z', question: 'An old open question', source: 'Assistant' }];
+    expect(buildKpis(enquiries, many, now).find((k) => k.action === 'questions')?.value).toBe(many.length);
+  });
+
   it('tiles are in the expected order with the expected actions', () => {
     expect(buildKpis(enquiries, questions, now).map((k) => k.action)).toEqual(['new', 'today', 'followup', 'questions']);
   });

@@ -201,11 +201,28 @@ function DashboardBoard({
 
   function onTile(k: Kpi) {
     if (k.action === 'questions') {
-      document.getElementById('unanswered')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showQuestions();
       return;
     }
     chooseFilter(k.action, { toggle: true, scroll: true });
   }
+
+  /**
+   * The questions tile doesn't filter the enquiries: it brings the Unanswered questions panel into
+   * view (scrolling on phones), outlines it briefly and moves focus there, so the tap always shows something.
+   */
+  const [questionsFlash, setQuestionsFlash] = useState(0);
+  function showQuestions() {
+    const panel = document.getElementById('unanswered');
+    if (!panel) return;
+    panel.scrollIntoView({ behavior: 'smooth', block: isPhoneWidth() ? 'start' : 'nearest' });
+    setQuestionsFlash((n) => n + 1); // a new key restarts the outline animation on every tap
+  }
+
+  // Focus the panel's heading after it re-renders, so keyboard and screen-reader users land there too.
+  useEffect(() => {
+    if (questionsFlash) document.getElementById('unanswered-title')?.focus({ preventScroll: true });
+  }, [questionsFlash]);
 
   const emptyText = !all.length
     ? 'No enquiries yet. Requests from the website will appear here.'
@@ -572,8 +589,15 @@ function DashboardBoard({
                   )}
                   </div>
                 </section>
-                <section className="panel panel--pad" id="unanswered">
-                  <h2 className="panel__title panel__title--sm">Unanswered questions</h2>
+                <section
+                  key={`unanswered-${questionsFlash}`}
+                  className={`panel panel--pad ${questionsFlash ? 'is-flash' : ''}`}
+                  id="unanswered"
+                  aria-labelledby="unanswered-title"
+                >
+                  <h2 id="unanswered-title" className="panel__title panel__title--sm" tabIndex={-1}>
+                    Unanswered questions
+                  </h2>
                   <p className="panel__hint">Questions the assistant had no approved answer for</p>
                   {answered && (
                     <p className="unanswered__undo" role="status">
